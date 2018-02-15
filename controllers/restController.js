@@ -2,7 +2,12 @@ var Rest = require('../models/rest');
 
 // Display list of all Authors.
 exports.rest_list = function(req, res) {
-    res.send('NOT IMPLEMENTED: Rest list');
+	Rest.find()
+		.exec(function(err, list_rest){
+			if(err){return next(err);}
+			// Success
+			res.render('rest_list',{title: 'Restaurant lists', rest_list: list_rest});
+		});
 };
 
 // Display detail page for a specific Author.

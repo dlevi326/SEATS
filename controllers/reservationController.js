@@ -1,8 +1,13 @@
 var Reservation = require('../models/reservations');
 
 // Display list of all Authors.
-exports.reservation_list = function(req, res) {
-    res.send('NOT IMPLEMENTED: Reservation list');
+exports.reservation_list = function(req, res, next) {
+	Reservation.find().populate('creator rest')
+		.exec(function(err, list_res){
+			if(err){return next(err);}
+			// Success
+			res.render('res_list',{title: 'Reservation lists', res_list: list_res});
+		});
 };
 
 // Display detail page for a specific Author.

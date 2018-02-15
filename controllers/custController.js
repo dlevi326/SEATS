@@ -1,8 +1,13 @@
 var Cust = require('../models/cust');
 
 // Display list of all Authors.
-exports.customer_list = function(req, res) {
-    res.send('NOT IMPLEMENTED: Customer list');
+exports.customer_list = function(req, res,next) {
+    Cust.find({}, 'first_name last_name phone_number address')
+    	.exec(function(err, list_cust){
+    		if(err){return next(err);}
+    		// Successful
+    		res.render('cust_list',{title: 'Customer List', cust_list: list_cust});
+    	});
 };
 
 // Display detail page for a specific Author.

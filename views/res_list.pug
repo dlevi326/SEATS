@@ -1,0 +1,11 @@
+extends layout
+
+block content
+	h1=title
+
+	ul
+	each res in res_list
+		li
+			a(href=res.url) #{res.name}
+	else
+		li There are no reservations logged.

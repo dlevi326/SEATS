@@ -22,7 +22,7 @@ RestSchema
 RestSchema
 .virtual('url')
 .get(function () {
-  return '/users/rest/' + this._id + '/home';
+  return '/users/rest/' + this._id;
 });
 
 //Export model
