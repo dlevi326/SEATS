@@ -1,5 +1,17 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+	h1= title
+	p Welcome to #[em SEATS], an online restaurant reservation system! 
+
+	h1 Listings
+
+	if error
+		p Error getting listings.
+	else
+		p The database has the following record counts:
+
+	ul
+		li #[strong Customers:] !{data.cust_count}
+		li #[strong Reservations:] !{data.res_count}
+		li #[strong Restaurants:] !{data.rest_count} 

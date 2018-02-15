@@ -13,7 +13,7 @@ var app = express();
 
 //Set up mongoose connection
 var mongoose = require('mongoose');
-var mongoDB = 'mongodb://seats:seats1234@ds235708.mlab.com:35708/seats';
+var mongoDB = 'mongodb://seats:seats1234@ds235768.mlab.com:35768/seats';
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
@@ -51,5 +51,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
 
 module.exports = app;

@@ -10,7 +10,7 @@ var Rest = require('./models/rest')
 
 
 var mongoose = require('mongoose');
-var mongoDB = 'mongodb://seats:seats1234@ds235708.mlab.com:35708/seats';
+var mongoDB = 'mongodb://seats:seats1234@ds235768.mlab.com:35768/seats';
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 var db = mongoose.connection;
