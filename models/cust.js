@@ -22,7 +22,7 @@ CustomerSchema
 CustomerSchema
 .virtual('url')
 .get(function () {
-  return '/users/cust/' + this._id + '/home';
+  return '/users/cust/' + this._id;
 });
 
 //Export model

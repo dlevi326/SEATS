@@ -1,0 +1,20 @@
+extends layout
+
+block content
+	h1 Customer: #{customer.name}
+	p #{customer.phone_number}
+
+	div(style='margin-left:20px;margin-top:20px')
+		h4 Reservations
+
+		dl
+		each reservation in reservations
+			dt
+				a(href=reservation.url) #{reservation.date_created}
+			dd #{reservation.rest.name}
+		else
+			p This author has no reservations.
+
+	hr
+	p
+		a(href=customer.url+'/delete') Delete customer

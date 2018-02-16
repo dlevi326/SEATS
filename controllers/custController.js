@@ -1,4 +1,7 @@
 var Cust = require('../models/cust');
+var Res = require('../models/reservations');
+
+var async = require('async');
 
 // Display list of all Authors.
 exports.customer_list = function(req, res,next) {
@@ -11,8 +14,26 @@ exports.customer_list = function(req, res,next) {
 };
 
 // Display detail page for a specific Author.
-exports.customer_detail = function(req, res) {
-    res.send('NOT IMPLEMENTED: Customer detail: ' + req.params.id);
+exports.customer_detail = function(req, res, next) {
+    async.parallel({
+        customer: function(callback){
+            Cust.findById(req.params.id)
+                .exec(callback)
+        },
+        reservations: function(callback){
+            Res.find({'creator': req.params.id})
+                .exec(callback)
+        },
+    },function(err,results){
+        if(err){return next(err);}
+        if(results.customer==null){
+            var err = new Error('Customer not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Successful
+        res.render('customer_detail', {title: 'Customer Detail', customer: results.customer, reservations: results.reservations});
+    });
 };
 
 // Display Author create form on GET.

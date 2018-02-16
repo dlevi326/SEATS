@@ -49,7 +49,7 @@ router.post('/users/reservation/:id/delete', reservation_controller.reservation_
 // GET request for one Reservation.
 router.get('/users/reservation/:id', reservation_controller.reservation_detail);
 
-// GET request for list of all Reservation.
+// GET request for list of all Reservations.
 router.get('/users/reservation', reservation_controller.reservation_list);
 
 /// Restaurant ROUTES ///
