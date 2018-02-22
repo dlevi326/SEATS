@@ -56,11 +56,11 @@ schema
 //.has().not().spaces()                           // Should not have spaces 
 
 exports.customer_create_post =  [
-
     // Validate fields.
     body('email').isLength({ min: 5 }).trim().withMessage('Email should be longer than five characters.')
         .isEmail().withMessage('Not a valid email address.'),
-   	body('password').isLength({ min: 0 }).trim().withMessage('password too short.'),
+   	body('password').isLength({ min: 5 }).trim().withMessage('password should be longer than five characters.'),
+   	body('password2').equals(body('password')).withMessage('password does not match'),
     body('first_name').isLength({ min: 1 }).trim().withMessage('First name must be specified.')
         .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
     body('last_name').isLength({ min: 1 }).trim().withMessage('Last name must be specified.')
@@ -114,7 +114,6 @@ exports.customer_delete_get = function(req, res) {
 };*/
 
 exports.customer_delete_get = function(req, res, next) {
-
 	async.parallel({
         customer: function(callback) {
           Cust.findById(req.params.id).exec(callback)
@@ -128,13 +127,12 @@ exports.customer_delete_get = function(req, res, next) {
             res.redirect('/users/cust');
         }
         // Successful, so render.
-        res.render('cust_delete', { title: 'Delete Customer', customer: results.customer, reservations: results.reservations } );
+        res.render('cust_delete', { title: 'Delete Customer', customer: results.customer, reservations: results.reservation } );
     });
 };
 
 // Handle Author delete on POST.
 exports.customer_delete_post = function(req, res) {
-
     async.parallel({
         customer: function(callback) {
           Cust.findById(req.body.id).exec(callback)
@@ -144,8 +142,8 @@ exports.customer_delete_post = function(req, res) {
         },
     }, function(err, results) {
         if (err) { return next(err); }
-        if(results.reservations.length > 0){
-        	res.render('cust_delete', { title: 'Delete Customer', customer: results.customer, reservations: results.reservations } );
+        if(results.reservation.length > 0){
+        	res.render('cust_delete', { title: 'Delete Customer', customer: results.customer, reservations: results.reservation } );
     		return;
         }else{
         	// No results.
@@ -155,6 +153,6 @@ exports.customer_delete_post = function(req, res) {
                 console.log(req.body.custid + " deleted")
                 res.redirect('/users/cust')
             })
-        }     
+        }
     });
 };
