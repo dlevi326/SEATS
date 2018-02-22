@@ -4,10 +4,11 @@ var Schema = mongoose.Schema;
 
 var CustomerSchema = new Schema(
   {
+  	email: {type: String,  required: true, max: 50},
+  	password: {type: String, required: true, max: 20},
     first_name: {type: String, required: true, max: 100},
     last_name: {type: String, required: true, max: 100},
-    phone_number: {type: String, required: true, max: 12},
-    address: {type: String, required: true, max: 12},
+    phone_number: {type: String, required: true, max: 12}
   }
 );
 

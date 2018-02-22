@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='email') Email:
+      input#email.form-control(type='email', placeholder='name@email.com' name='email' required='true' value=(undefined===cust ? '' : Cust.email))
+      label(for='password') Password:
+      input#password.form-control(type='password' name='password'  required='true' value=(undefined===cust ? '' : Cust.password))
+      label(for='password2') Confirm Password:
+      input#password2.form-control(type='password' name='confirmPassword')
+      label(for='first_name') First Name:
+      input#first_name.form-control(type='text', placeholder='Bruce' name='first_name' required='true' value=(undefined===cust ? '' : Cust.first_name) )
+      label(for='last_name') Last Name:
+      input#last_name.form-control(type='text', placeholder='Lee' name='last_name' required='true' value=(undefined===cust ? '' : Cust.last_name))
+      label(for='phone_number') Phone Number:
+      input#phone_number.form-control(type='text', placeholder='123-456-7890' name='phone_number', value=(undefined===cust ? '' : Cust.phone_number) )
+    button.btn.btn-primary(type='submit') Submit
+  if errors 
+    ul
+      for error in errors
+        li!= error.msg

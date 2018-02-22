@@ -23,10 +23,10 @@ var rests = []
 
 function custCreate(first_name, family_name, phone_number,address, cb) {
   customerdetail = {
-    first_name:first_name, 
+    first_name: first_name, 
     last_name: family_name,
     phone_number: phone_number,
-    Address: address
+    address: address
   }
 
   var cust = new Cust(customerdetail);
@@ -63,7 +63,7 @@ function restCreate(rest_name, max_capacity, phone_number,address, cb) {
     rest_name: rest_name, 
     max_capacity: max_capacity,
     phone_number: phone_number,
-    Address: address
+    address: address
   }
 
   var rest = new Rest(restdetail);
@@ -131,14 +131,6 @@ function createReservation(cb) {
         // optional callback
         cb);
 }
-
-
-
-
-
-
-
-
 
 async.series([
     createCustomers,

@@ -6,15 +6,13 @@ var Schema = mongoose.Schema;
 var ReservationSchema = new Schema(
   {
     creator: {type: Schema.ObjectId, ref: 'Cust', required: true},
-    date_created: {type: Date, required: true},
+    time: {type: Date, required: true},
     people_num: {type: Number, required: true},
     rest: {type: Schema.ObjectId, ref: 'Rest', required: true},
   }
 );
 
 // Virtual for author's full name
-
-
 ReservationSchema.virtual('date_created_formatted')
 .get(function(){
 	return moment(this.date_created).format('MMMM Do, YYYY');

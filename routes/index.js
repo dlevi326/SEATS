@@ -2,9 +2,9 @@ var express = require('express');
 var router = express.Router();
 
 // Require controller modules.
-var cust_controller = require('../controllers/custcontroller');
-var reservation_controller = require('../controllers/reservationcontroller');
-var rest_controller = require('../controllers/restcontroller');
+var cust_controller = require('../controllers/custController');
+var reservation_controller = require('../controllers/reservationController');
+var rest_controller = require('../controllers/restController');
 var listing = require('../controllers/listing');
 
 
