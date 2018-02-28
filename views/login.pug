@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='email') Email:
+      input#email.form-control(type='email', placeholder='name@email.com' name='email' required='true' value=(undefined===cust ? '' : Cust.email))
+      label(for='password') Password:
+      input#password.form-control(type='password' name='password'  required='true' value=(undefined===cust ? '' : Cust.password))
+      
+    button.btn.btn-primary(type='submit') Login
+    br
+    br
+    button.btn.btn-primary(type='submit') Create Account

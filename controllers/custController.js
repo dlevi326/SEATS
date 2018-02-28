@@ -1,6 +1,5 @@
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
-var passwordValidator = require('password-validator')
 var Cust = require('../models/cust');
 var Res = require('../models/reservations');
 var async = require('async');
@@ -43,30 +42,18 @@ exports.customer_create_get = function(req, res) {
     res.render('cust_form', { title: 'Create Customer'});
 };
 
-// Create a schema 
-var schema = new passwordValidator();
- 
-// Add properties to it 
-schema
-.is().min(5)                                    // Minimum length 8 
-//.is().max(100)                                  // Maximum length 100 
-//.has().uppercase()                              // Must have uppercase letters 
-//.has().lowercase()                              // Must have lowercase letters 
-//.has().digits()                                 // Must have digits 
-//.has().not().spaces()                           // Should not have spaces 
-
 exports.customer_create_post =  [
     // Validate fields.
     body('email').isLength({ min: 5 }).trim().withMessage('Email should be longer than five characters.')
         .isEmail().withMessage('Not a valid email address.'),
    	body('password').isLength({ min: 5 }).trim().withMessage('password should be longer than five characters.'),
-   	body('password2').equals(body('password')).withMessage('password does not match'),
+   	//body('password2').equals(body('password')).withMessage('password does not match'),
     body('first_name').isLength({ min: 1 }).trim().withMessage('First name must be specified.')
         .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
     body('last_name').isLength({ min: 1 }).trim().withMessage('Last name must be specified.')
         .isAlphanumeric().withMessage('Last name has non-alphanumeric characters.'),
-    body('phone_number').isLength({ min: 1 }).trim().withMessage('Phone must be specified.')
-        .isAlphanumeric().withMessage('Phone Number has non-alphanumeric characters.'),
+    body('phone_number').isLength({ min: 1 }).trim().withMessage('Phone must be specified.'),
+        //.isAlphanumeric().withMessage('Phone Number has non-alphanumeric characters.'),
     
     // Sanitize fields.
     sanitizeBody('email').trim().escape(),
@@ -106,12 +93,6 @@ exports.customer_create_post =  [
         }
     }
 ];
-
-/*
-// Display Author delete form on GET.
-exports.customer_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Customer delete GET');
-};*/
 
 exports.customer_delete_get = function(req, res, next) {
 	async.parallel({

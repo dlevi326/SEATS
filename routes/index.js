@@ -5,6 +5,7 @@ var router = express.Router();
 var cust_controller = require('../controllers/custController');
 var reservation_controller = require('../controllers/reservationController');
 var rest_controller = require('../controllers/restController');
+var login_controller = require('../controllers/loginController');
 var listing = require('../controllers/listing');
 
 
@@ -12,6 +13,9 @@ var listing = require('../controllers/listing');
 
 // GET SEATS home page.
 router.get('/', listing.index);
+
+// Login Routes
+router.get('/users/login',login_controller.login_get);
 
 // GET request for creating a Customer. NOTE This must come before routes that display Book (uses id).
 router.get('/users/cust/create', cust_controller.customer_create_get);

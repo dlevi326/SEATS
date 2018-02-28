@@ -17,12 +17,13 @@ exports.reservation_detail = function(req, res) {
 
 // Display Author create form on GET.
 exports.reservation_create_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Reservation create GET');
+	res.render('res_create', {title: 'Create Reservation', error: 'errors'})
+    //res.send('NOT IMPLEMENTED: Reservation create GET');
 };
 
 // Handle Author create on POST.
 exports.reservation_create_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Reservation create POST');
+	res.send('NOT IMPLEMENTED: Reservation create POST');
 };
 
 // Display Author delete form on GET.
