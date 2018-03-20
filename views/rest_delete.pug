@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  h1 #{title}: #{rest.rest_name}
+  p= rest.lifespan
+
+  if reservations.length
+  
+    p #[strong Delete the following reservations before attempting to delete this restaurant.]
+  
+    div(style='margin-left:20px;margin-top:20px')
+
+      h4 Reservations
+    
+      dl
+      each reservation in reservations
+        dt 
+          a(href=reservation.url) #{reservation.date_created}
+        dd #{reservation.rest.name}
+
+  else
+
+    p Do you really want to delete this restaurant?
+    
+    form(method='POST' action='')
+      div.form-group
+        input#restid.form-control(type='hidden', name='restid', required='true', value=rest._id )
+
+      button.btn.btn-primary(type='submit') Delete

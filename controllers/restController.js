@@ -108,17 +108,48 @@ exports.rest_create_post = [
         }
     }
 ];
-//function(req, res) {
-    //res.send('NOT IMPLEMENTED: Rest create POST');
-
-//};
 
 // Display Author delete form on GET.
-exports.rest_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Rest delete GET');
+exports.rest_delete_get = function(req, res,next) {
+    async.parallel({
+        rest: function(callback) {
+          Rest.findById(req.params.id).exec(callback)
+        },
+        reservation: function(callback) {
+          Res.find({'rest': req.params.id }).exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.reservation==null) { // No results.
+            res.redirect('/users/rest');
+        }
+        // Successful, so render.
+        res.render('rest_delete', { title: 'Delete Restaurant', rest: results.rest, reservations: results.reservation } );
+    });
 };
 
 // Handle Author delete on POST.
 exports.rest_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Rest delete POST');
+    async.parallel({
+        rest: function(callback) {
+          Rest.findById(req.body.id).exec(callback)
+        },
+        reservation: function(callback) {
+          Res.find({'rest': req.body.id}).exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if(results.reservation.length > 0){
+            res.render('rest_delete', { title: 'Delete Restaurant', rest: results.rest, reservations: results.reservation } );
+            return;
+        }else{
+            // No results.
+            Rest.findByIdAndRemove(req.body.restid, function deleteRest(err) {
+                if (err) { return next(err); }
+                // Success - go to author list
+                console.log(req.body.restid + " deleted")
+                res.redirect('/users/rest')
+            })
+        }
+    });
 };
