@@ -1,4 +1,9 @@
+const { body,validationResult } = require('express-validator/check');
+const { sanitizeBody } = require('express-validator/filter');
 var Rest = require('../models/rest');
+var Cust = require('../models/cust');
+var Res = require('../models/reservations');
+var async = require('async');
 
 // Display list of all Authors.
 exports.rest_list = function(req, res) {
@@ -11,8 +16,27 @@ exports.rest_list = function(req, res) {
 };
 
 // Display detail page for a specific Author.
-exports.rest_detail = function(req, res) {
-    res.send('NOT IMPLEMENTED: Rest detail: ' + req.params.id);
+exports.rest_detail = function(req, res, next) {
+    //res.send('NOT IMPLEMENTED: Rest detail: ' + req.params.id);
+     async.parallel({
+        rest: function(callback){
+            Rest.findById(req.params.id)
+                .exec(callback)
+        },
+        reservations: function(callback){
+            Res.find({'rest': req.params.id})
+                .exec(callback)
+        },
+    },function(err,results){
+        if(err){return next(err);}
+        if(results.rest==null){
+            var err = new Error('Customer not found');
+            err.status = 404;
+            return next(err);
+        }
+        // Successful
+        res.render('rest_detail', {title: 'Restaurant Details', Restaurant: results.rest, reservations: results.reservations});
+    });
 };
 
 // Display Author create form on GET.
