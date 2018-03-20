@@ -22,7 +22,7 @@ exports.customer_detail = function(req, res, next) {
                 .exec(callback)
         },
         reservations: function(callback){
-            Res.find({'creator': req.params.id})
+            Res.find({'creator': req.params.id}).populate('rest')
                 .exec(callback)
         },
     },function(err,results){

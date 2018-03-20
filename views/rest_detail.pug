@@ -9,9 +9,11 @@ block content
 
 		dl
 		each reservation in reservations
-			dt
-				a(href=reservation.url) #{reservation.date_created}
-			dd #{reservation.rest.name}
+			li
+				a(href=reservation.url) #{reservation.creator.first_name} #{reservation.creator.last_name}
+				p
+				| Party Size: #{reservation.people_num},
+				| Time: #{reservation.time}
 		else
 			p This Restaurant has no reservations.
 

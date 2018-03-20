@@ -24,7 +24,7 @@ exports.rest_detail = function(req, res, next) {
                 .exec(callback)
         },
         reservations: function(callback){
-            Res.find({'rest': req.params.id})
+            Res.find({'rest': req.params.id}).populate('creator')
                 .exec(callback)
         },
     },function(err,results){
