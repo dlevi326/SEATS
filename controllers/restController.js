@@ -46,9 +46,72 @@ exports.rest_create_get = function(req, res) {
 };
 
 // Handle Author create on POST.
-exports.rest_create_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Rest create POST');
-};
+exports.rest_create_post = [
+    // Validate fields.
+    body('email').isLength({ min: 5 }).trim().withMessage('Email should be longer than five characters.')
+        .isEmail().withMessage('Not a valid email address.'),
+    body('password').isLength({ min: 5 }).trim().withMessage('password should be longer than five characters.'),
+    //body('password2').equals(body('password')).withMessage('password does not match'),
+    body('rest_name').isLength({ min: 1 }).trim().withMessage('Restaurant name must be specified.'),
+
+    body('Address').isLength({ min: 1 }).trim().withMessage('Address must be specified.'),
+
+    body('max_capacity').isLength({ min: 1 }).trim().withMessage('Max capacity must be specified.'),
+
+    body('phone_number').isLength({ min: 1 }).trim().withMessage('Phone number must be specified.'),
+       
+    body('open_time').isLength({ min: 1 }).trim().withMessage('Open time must be specified.'),
+
+    body('close_time').isLength({ min: 1 }).trim().withMessage('Close time must be specified.'),
+    
+    // Sanitize fields.
+    sanitizeBody('email').trim().escape(),
+    sanitizeBody('password').trim().escape(),
+    sanitizeBody('password2').trim().escape(),
+    sanitizeBody('rest_name').trim().escape(),
+    sanitizeBody('Address').trim().escape(),
+    sanitizeBody('max_capacity').trim().escape(),
+    sanitizeBody('phone_number').trim().escape(),
+    sanitizeBody('open_time').trim().escape(),
+    sanitizeBody('close_time').trim().escape(),
+
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            // There are errors. Render form again with sanitized values/errors messages.
+            res.render('rest_create', { title: 'Create Customer', errors: errors.array() });
+            return;
+        }
+        else {
+            // Data from form is valid.
+
+            // Create an Author object with escaped and trimmed data.
+            var rest = new Rest(
+                {
+                    email: req.body.email,
+                    password: req.body.password,
+                    rest_name: req.body.rest_name,
+                    max_capacity: req.body.max_capacity,
+                    Address: req.body.Address,
+                    phone_number: req.body.phone_number,
+                    open_time: req.body.open_time,
+                    close_time: req.body.close_time
+                });
+            rest.save(function (err) {
+                if (err) { return next(err); }
+                // Successful - redirect to new author record.
+                res.redirect(rest.url);
+            });
+        }
+    }
+];
+//function(req, res) {
+    //res.send('NOT IMPLEMENTED: Rest create POST');
+
+//};
 
 // Display Author delete form on GET.
 exports.rest_delete_get = function(req, res) {

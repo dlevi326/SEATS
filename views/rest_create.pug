@@ -15,6 +15,10 @@ block content
       input#rest_name.form-control(type='text', placeholder='Chipotle' name='rest_name' required='true' value=(undefined===rest ? '' : Rest.rest_name) )
       label(for='Address') Address:
       input#Address.form-control(type='text', placeholder='41 Cooper Square, New York, NY, 10003' name='Address' required='true' value=(undefined===rest ? '' : Rest.Address))
+
+      label(for='max_capacity') Max Capacity:
+      input#max_capacity.form-control(type='text', placeholder='999' name='max_capacity' required='true' value=(undefined===rest ? '' : Rest.max_capacity))
+
       label(for='phone_number') Phone Number:
       input#phone_number.form-control(type='text', placeholder='123-456-7890' name='phone_number', value=(undefined===rest ? '' : Rest.phone_number) )
       label(for='open_time') Open Time:
