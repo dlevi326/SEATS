@@ -17,7 +17,8 @@ exports.rest_detail = function(req, res) {
 
 // Display Author create form on GET.
 exports.rest_create_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Rest create GET');
+    //res.send('NOT IMPLEMENTED: Rest create GET');
+	res.render('rest_create', {title: 'Create Restaurant', error: 'errors'})
 };
 
 // Handle Author create on POST.
