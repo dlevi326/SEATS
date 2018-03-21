@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 var ReservationSchema = new Schema(
   {
     creator: {type: Schema.ObjectId, ref: 'Cust', required: true},
-    time: {type: String, required: true},
+    date: {type: Date, required: true},
     people_num: {type: Number, required: true},
     rest: {type: Schema.ObjectId, ref: 'Rest', required: true},
   }

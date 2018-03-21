@@ -48,11 +48,13 @@ exports.reservation_create_get = function(req, res, next) {
 exports.reservation_create_post = [
     // Validate fields.
     body('restaurant').isLength({ min: 1 }).trim().withMessage('Restaurant should be specified.'),
+    body('date').isLength({ min: 1}).trim().withMessage('Date must be specified.'),
     body('time').isLength({ min: 1 }).trim().withMessage('Time must be specified.'),
     body('people_num').isLength({ min: 1 }).trim().withMessage('People number must be specified.'),
     body('creator').isLength({ min: 1 }).trim().withMessage('Creator must be specified.'),
     // Sanitize fields.
     sanitizeBody('restaurant').trim().escape(),
+    sanitizeBody('date').trim().escape(),
     sanitizeBody('time').trim().escape(),
     sanitizeBody('people_num').trim().escape(),
     sanitizeBody('creator').trim().escape(),
@@ -78,7 +80,6 @@ exports.reservation_create_post = [
                     error.push('Invalid restaurant')
                     res.render('res_create',{ title: 'Create Reservations', errors: error, restaurants:res.restaurants,customers:res.customers })
                 }else{
-                    console.log("restaruant name from body:" + req.body.restaurant)
                     findPerson(restaurant)
                 }
             });
@@ -100,7 +101,7 @@ exports.reservation_create_post = [
             saveSchema = function(restaurant,person){
                 var reservation = new Res({
                     creator: person._id,
-                    time: req.body.time,
+                    date: new Date(req.body.date + " " + req.body.time),
                     people_num: req.body.people_num,
                     rest: restaurant._id,
                 });

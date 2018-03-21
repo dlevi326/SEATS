@@ -8,8 +8,8 @@ var RestSchema = new Schema(
     max_capacity: {type: Number, required: true},
     phone_number: {type: String, required: true, max: 12},
     Address: {type: String, required: true, max: 12},
-    open_time: {type: String, required: true},
-    close_time: {type: String, required: true}
+    open_time: {type: Date, required: true},
+    close_time: {type: Date, required: true}
   }
 );
 

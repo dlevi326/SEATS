@@ -20,11 +20,12 @@ block content
       input#max_capacity.form-control(type='text', placeholder='999' name='max_capacity' required='true' value=(undefined===rest ? '' : Rest.max_capacity))
 
       label(for='phone_number') Phone Number:
-      input#phone_number.form-control(type='text', placeholder='123-456-7890' name='phone_number', value=(undefined===rest ? '' : Rest.phone_number) )
+      input#phone_number.form-control(type='tel', placeholder='123-456-7890' name='phone_number', value=(undefined===rest ? '' : Rest.phone_number) )
       label(for='open_time') Open Time:
-      input#open_time.form-control(type='text', placeholder='08:00' name='open_time', value=(undefined===rest ? '' : Rest.open_time) )
+      input#open_time.form-control(type='time', name='open_time', value=(undefined===rest ? '' : Rest.open_time) )
       label(for='close_time') Close Time:
-      input#close_time.form-control(type='text', placeholder='22:00' name='close_time', value=(undefined===rest ? '' : Rest.close_time) )
+      input#close_time.form-control(type='time', name='close_time', value=(undefined===rest ? '' : Rest.close_time) )
+
     button.btn.btn-primary(type='submit') Submit
   if errors 
     ul

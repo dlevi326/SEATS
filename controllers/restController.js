@@ -87,7 +87,9 @@ exports.rest_create_post = [
         }
         else {
             // Data from form is valid.
-
+            var defaultdate = "1970-01-01"
+            console.log(new Date(defaultdate + " " + req.body.open_time))
+            console.log(new Date(defaultdate + " " + req.body.close_time))
             // Create an Author object with escaped and trimmed data.
             var rest = new Rest(
                 {
@@ -97,8 +99,8 @@ exports.rest_create_post = [
                     max_capacity: req.body.max_capacity,
                     Address: req.body.Address,
                     phone_number: req.body.phone_number,
-                    open_time: req.body.open_time,
-                    close_time: req.body.close_time
+                    open_time: new Date(defaultdate + " " + req.body.open_time),
+                    close_time: new Date(defaultdate + " " + req.body.close_time)
                 });
             rest.save(function (err) {
                 if (err) { return next(err); }
