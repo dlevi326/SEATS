@@ -16,7 +16,7 @@ exports.reservation_list = function(req, res, next) {
 };
 
 // Display detail page for a specific Author.
-exports.reservation_detail = function(req, res,next) {
+exports.reservation_detail = function(req, res, next) {
     async.parallel({
         reservation: function(callback){
         	Res.findById(req.params.id).populate('creator').exec(callback);
@@ -28,7 +28,7 @@ exports.reservation_detail = function(req, res,next) {
 };
 
 // Display Author create form on GET.
-exports.reservation_create_get = function(req, res,next) {
+exports.reservation_create_get = function(req, res, next) {
 	//res.render('res_create', {title: 'Create Reservation', error: 'errors'})
 
 	async.parallel({
@@ -70,29 +70,42 @@ exports.reservation_create_post = [
         else {
             // Data from form is valid.
 
-            //creators: function(callback){
-            //	Cust.find({'email': req.body.email}).exec(callback)
-            //}
-            //creators = Cust.find({'email': req.body.email})
-            //restaurants = Rest.find({'rest_name': req.body.restaurant})
-
-            // Create an Author object with escaped and trimmed data.
-            var reservation = new Res(
-                {
-                	creator: req.body.creator,
-    				time: req.body.time,
-    				people_num: req.body.people_num,
-    				rest: req.body.restaurant,
-                });
-
-
-
-            reservation.save(function (err) {
-                if (err) { return next(err); }
-                // Successful - redirect to new reservation record.
-                res.redirect(reservation.url);
+            // Mongoose queries
+            Rest.findOne({'rest_name':req.body.restaurant},'_id', function(err, restaurant){
+                if(err) return handleError('err');
+                if(restaurant==null){
+                    var errors = []
+                    errors.push('Invalid restaurant')
+                    res.render('res_create',{ title: 'Create Reservations', errors: errors, restaurants:res.restaurants,customers:res.customers })
+                }
+                findPerson(restaurant)
+                
             });
 
+            findPerson = function(restaurant){
+                Cust.findOne({'email':req.body.email},'_id', function(err, person){
+                    if(err) return handleError(err);
+                    saveSchema(restaurant,person)
+                });
+            }
+            
+            saveSchema = function(restaurant,person){
+                var reservation = new Res({
+                    creator: person._id,
+                    time: req.body.time,
+                    people_num: req.body.people_num,
+                    rest: restaurant._id,
+                });
+                saveRes(reservation)
+            }
+        
+            saveRes = function(reservation){
+                reservation.save(function(err){
+                    if(err){return next(err);}
+                    res.redirect(reservation.url)
+                })
+            }
+            
 
         }
     }
