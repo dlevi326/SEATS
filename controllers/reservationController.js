@@ -72,20 +72,28 @@ exports.reservation_create_post = [
 
             // Mongoose queries
             Rest.findOne({'rest_name':req.body.restaurant},'_id', function(err, restaurant){
-                if(err) return handleError('err');
-                if(restaurant==null){
-                    var errors = []
-                    errors.push('Invalid restaurant')
-                    res.render('res_create',{ title: 'Create Reservations', errors: errors, restaurants:res.restaurants,customers:res.customers })
+                if(err) return next(err)
+                if(restaurant == null){
+                    var error = []
+                    error.push('Invalid restaurant')
+                    res.render('res_create',{ title: 'Create Reservations', errors: error, restaurants:res.restaurants,customers:res.customers })
+                }else{
+                    console.log("restaruant name from body:" + req.body.restaurant)
+                    findPerson(restaurant)
                 }
-                findPerson(restaurant)
-                
             });
 
             findPerson = function(restaurant){
-                Cust.findOne({'email':req.body.email},'_id', function(err, person){
-                    if(err) return handleError(err);
-                    saveSchema(restaurant,person)
+                Cust.findOne({'email':req.body.creator},'_id', function(err, person){
+                    if(err) return next(err)
+                    if(person == null){
+                        var error = []
+                        error.push('Invalid Customer Email')
+                        res.render('res_create', { title: 'Create Reservations', errors: error, restaurants:res.restaurants,customers:res.customers })
+                    }
+                    else {
+                        saveSchema(restaurant,person)
+                    }
                 });
             }
             
