@@ -116,7 +116,7 @@ exports.rest_delete_get = function(req, res,next) {
           Rest.findById(req.params.id).exec(callback)
         },
         reservation: function(callback) {
-          Res.find({'rest': req.params.id }).exec(callback)
+          Res.find({'rest': req.params.id }).populate('rest creator').exec(callback)
         },
     }, function(err, results) {
         if (err) { return next(err); }
@@ -135,7 +135,7 @@ exports.rest_delete_post = function(req, res) {
           Rest.findById(req.body.id).exec(callback)
         },
         reservation: function(callback) {
-          Res.find({'rest': req.body.id}).exec(callback)
+          Res.find({'rest': req.body.id}).populate('rest').exec(callback)
         },
     }, function(err, results) {
         if (err) { return next(err); }

@@ -1,0 +1,9 @@
+extends layout
+
+block content
+	h1 Reservation: #{reservation.creator.name}
+	p Time: #{reservation.time} -- People Number: #{reservation.people_num}
+
+	hr
+	p
+		a(href=reservation.url+'/delete') Delete reservation

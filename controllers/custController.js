@@ -100,7 +100,7 @@ exports.customer_delete_get = function(req, res, next) {
           Cust.findById(req.params.id).exec(callback)
         },
         reservation: function(callback) {
-          Res.find({'creator': req.params.id }).exec(callback)
+          Res.find({'creator': req.params.id }).populate('rest creator').exec(callback)
         },
     }, function(err, results) {
         if (err) { return next(err); }
@@ -119,7 +119,7 @@ exports.customer_delete_post = function(req, res) {
           Cust.findById(req.body.id).exec(callback)
         },
         reservation: function(callback) {
-          Res.find({'creator': req.body.id}).exec(callback)
+          Res.find({'creator': req.body.id}).populate('creator').exec(callback)
         },
     }, function(err, results) {
         if (err) { return next(err); }

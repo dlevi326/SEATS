@@ -5,14 +5,34 @@ block content
 
   form(method='POST' action='')
     div.form-group
-      label(for='restaurant') Restaurant:
-      input#restaurant.form-control(type='text', placeholder='Chipotle' name='restaurant' required='true')
-      label(for='date') Date:
-      input#date.form-control(type='date', name='date' required='true')
+      
       label(for='time') Time:
-      input#time.form-control(type='text', placeholder='hh:mm' name='time' required='true')
-      label(for='phone_number') Size of Party:
-      input#phone_number.form-control(type='text', placeholder='2' name='phone_number')
+      input#time.form-control(type='time', name='time' required='true')
+
+      label(for='people_num') People Number:
+      input#people_num.form-control(type='text', placeholder='99' name='people_num' required='true') 
+
+    div.form-group
+      label(for='restaurant') Restaurant:
+      input(type='text' list='restaurant' name='restaurant' placeholder='Select restaurant' required='true')
+      datalist(id='restaurant')
+        if restaurants
+          for restaurant in restaurants
+            option(value=restaurant.rest_name) #{restaurant.rest_name}
+
+
+    div.form-group
+      label(for='creator') Customer:
+      input(type='text' list='creator' name='creator' placeholder='Select email' required='true')
+      datalist(id='creator')
+        if customers
+          for customer in customers
+            option(value=customer._id) #{customer.email}
+      
+
+
+
+
     button.btn.btn-primary(type='submit') Submit
   if errors 
     ul

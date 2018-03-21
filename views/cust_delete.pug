@@ -15,8 +15,10 @@ block content
       dl
       each reservation in reservations
         dt 
-          a(href=reservation.url) #{reservation.date_created}
-        dd #{reservation.rest.name}
+          a(href=reservation.url) #{reservation.rest.name} 
+        dd Time: #{reservation.time}
+        dd Creator: #{reservation.creator.name}
+        dd Number of People: #{reservation.people_num}
 
   else
 

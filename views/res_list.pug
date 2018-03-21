@@ -6,6 +6,6 @@ block content
 	ul
 	each res in res_list
 		li
-			a(href=res.url) #{res.name}
+			a(href=res.url) #{res.creator.name}
 	else
 		li There are no reservations logged.

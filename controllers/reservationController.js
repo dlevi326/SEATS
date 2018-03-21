@@ -1,8 +1,13 @@
-var Reservation = require('../models/reservations');
+const { body,validationResult } = require('express-validator/check');
+const { sanitizeBody } = require('express-validator/filter');
+var Rest = require('../models/rest');
+var Cust = require('../models/cust');
+var Res = require('../models/reservations');
+var async = require('async');
 
 // Display list of all Authors.
 exports.reservation_list = function(req, res, next) {
-	Reservation.find().populate('creator rest')
+	Res.find().populate('creator rest')
 		.exec(function(err, list_res){
 			if(err){return next(err);}
 			// Success
@@ -11,20 +16,87 @@ exports.reservation_list = function(req, res, next) {
 };
 
 // Display detail page for a specific Author.
-exports.reservation_detail = function(req, res) {
-    res.send('NOT IMPLEMENTED: Reservation detail: ' + req.params.id);
+exports.reservation_detail = function(req, res,next) {
+    async.parallel({
+        reservation: function(callback){
+        	Res.findById(req.params.id).populate('creator').exec(callback);
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        res.render('res_detail', { title: 'Reservation Info', error: 'errors', reservation: results.reservation });
+    });
 };
 
 // Display Author create form on GET.
-exports.reservation_create_get = function(req, res) {
-	res.render('res_create', {title: 'Create Reservation', error: 'errors'})
-    //res.send('NOT IMPLEMENTED: Reservation create GET');
+exports.reservation_create_get = function(req, res,next) {
+	//res.render('res_create', {title: 'Create Reservation', error: 'errors'})
+
+	async.parallel({
+        restaurants: function(callback) {
+            Rest.find(callback);
+        },
+        customers: function(callback) {
+            Cust.find(callback);
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        res.render('res_create', { title: 'Create Reservation',restaurants:results.restaurants, error: 'errors', customers: results.customers });
+    });
 };
 
 // Handle Author create on POST.
-exports.reservation_create_post = function(req, res) {
-	res.send('NOT IMPLEMENTED: Reservation create POST');
-};
+exports.reservation_create_post = [
+    // Validate fields.
+    body('restaurant').isLength({ min: 1 }).trim().withMessage('Restaurant should be specified.'),
+    body('time').isLength({ min: 1 }).trim().withMessage('Time must be specified.'),
+    body('people_num').isLength({ min: 1 }).trim().withMessage('People number must be specified.'),
+    body('creator').isLength({ min: 1 }).trim().withMessage('Creator must be specified.'),
+    // Sanitize fields.
+    sanitizeBody('restaurant').trim().escape(),
+    sanitizeBody('time').trim().escape(),
+    sanitizeBody('people_num').trim().escape(),
+    sanitizeBody('creator').trim().escape(),
+    
+    // Process request after validation and sanitization.
+    (req, res, next) => {
+
+        // Extract the validation errors from a request.
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            // There are errors. Render form again with sanitized values/errors messages.
+            res.render('res_create', { title: 'Create Reservations', errors: errors.array(), restaurants:res.restaurants,customers:res.customers });
+            return;
+        }
+        else {
+            // Data from form is valid.
+
+            //creators: function(callback){
+            //	Cust.find({'email': req.body.email}).exec(callback)
+            //}
+            //creators = Cust.find({'email': req.body.email})
+            //restaurants = Rest.find({'rest_name': req.body.restaurant})
+
+            // Create an Author object with escaped and trimmed data.
+            var reservation = new Res(
+                {
+                	creator: req.body.creator,
+    				time: req.body.time,
+    				people_num: req.body.people_num,
+    				rest: req.body.restaurant,
+                });
+
+
+
+            reservation.save(function (err) {
+                if (err) { return next(err); }
+                // Successful - redirect to new reservation record.
+                res.redirect(reservation.url);
+            });
+
+
+        }
+    }
+];
 
 // Display Author delete form on GET.
 exports.reservation_delete_get = function(req, res) {
