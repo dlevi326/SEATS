@@ -78,7 +78,19 @@ exports.reservation_create_post = [
                 if(restaurant == null){
                     var error = []
                     error.push('Invalid restaurant')
-                    res.render('res_create',{ title: 'Create Reservations', errors: error, restaurants:res.restaurants,customers:res.customers })
+
+
+                    async.parallel({
+                        restaurants: function(callback) {
+                            Rest.find(callback);
+                        },
+                        customers: function(callback) {
+                            Cust.find(callback);
+                        },
+                    }, function(err, results) {
+                        if (err) { return next(err); }
+                            res.render('res_create', { title: 'Create Reservation',restaurants:results.restaurants, errors: error, customers: results.customers });
+                    });
                 }else{
                     findPerson(restaurant)
                 }
@@ -90,7 +102,18 @@ exports.reservation_create_post = [
                     if(person == null){
                         var error = []
                         error.push('Invalid Customer Email')
-                        res.render('res_create', { title: 'Create Reservations', errors: error, restaurants:res.restaurants,customers:res.customers })
+
+                        async.parallel({
+                            restaurants: function(callback) {
+                                Rest.find(callback);
+                            },
+                            customers: function(callback) {
+                                Cust.find(callback);
+                            },
+                        }, function(err, results) {
+                            if (err) { return next(err); }
+                                res.render('res_create', { title: 'Create Reservation',restaurants:results.restaurants, errors: error, customers: results.customers });
+                        });
                     }
                     else {
                         saveSchema(restaurant,person)
