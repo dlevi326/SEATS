@@ -76,8 +76,7 @@ exports.reservation_create_post = [
             Rest.findOne({'rest_name':req.body.restaurant},'_id', function(err, restaurant){
                 if(err) return next(err)
                 if(restaurant == null){
-                    var error = []
-                    error.push('Invalid restaurant')
+                    
 
 
                     async.parallel({
@@ -89,19 +88,19 @@ exports.reservation_create_post = [
                         },
                     }, function(err, results) {
                         if (err) { return next(err); }
-                            res.render('res_create', { title: 'Create Reservation',restaurants:results.restaurants, errors: error, customers: results.customers });
+                            var error = [];
+                            error.push('Invalid restaurant');
+                            findPerson(restaurant,error)
                     });
                 }else{
                     findPerson(restaurant)
                 }
             });
 
-            findPerson = function(restaurant){
+            findPerson = function(restaurant,error){
                 Cust.findOne({'email':req.body.creator},'_id', function(err, person){
                     if(err) return next(err)
                     if(person == null){
-                        var error = []
-                        error.push('Invalid Customer Email')
 
                         async.parallel({
                             restaurants: function(callback) {
@@ -112,6 +111,7 @@ exports.reservation_create_post = [
                             },
                         }, function(err, results) {
                             if (err) { return next(err); }
+                                error.push('Invalid Customer Email')
                                 res.render('res_create', { title: 'Create Reservation',restaurants:results.restaurants, errors: error, customers: results.customers });
                         });
                     }
