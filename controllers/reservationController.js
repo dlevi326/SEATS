@@ -145,10 +145,42 @@ exports.reservation_create_post = [
 
 // Display Author delete form on GET.
 exports.reservation_delete_get = function(req, res) {
-    res.send('NOT IMPLEMENTED: Reservation delete GET');
+    async.parallel({
+        reservation: function(callback) {
+          Res.findById(req.params.id).populate('creator').exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        if (results.reservation==null) { // No results.
+            res.redirect('/users/res');
+        }
+        // Successful, so render.
+        res.render('res_delete', { title: 'Delete Reservation', reservation: results.reservation } );
+    });
 };
 
 // Handle Author delete on POST.
 exports.reservation_delete_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Reservation delete POST');
+    //res.send('NOT IMPLEMENTED: Reservation delete POST');
+    async.parallel({
+        reservation: function(callback) {
+          Res.findById(req.body.id).exec(callback)
+        },
+    }, function(err, results) {
+        if (err) { return next(err); }
+        
+        // No results.
+        Res.findByIdAndRemove(req.body.resid, function deleteReservation(err) {
+            if (err) { return next(err); }
+            // Success - go to author list
+            console.log(req.body.resid + " deleted")
+            res.redirect('/users/reservation')
+        })
+    });
 };
+
+
+
+
+
+

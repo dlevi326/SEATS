@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1 #{title}: #{reservation.creator.name}
+
+  p Do you really want to delete this reservation?
+  
+  form(method='POST' action='')
+    div.form-group
+      input#resid.form-control(type='hidden', name='resid', required='true', value=reservation._id )
+
+    button.btn.btn-primary(type='submit') Delete
