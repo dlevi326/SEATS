@@ -72,8 +72,15 @@ exports.reservation_create_post = [
         else {
             // Data from form is valid.
 
+            // Check date/time
+            var thisDate = new Date(req.body.date + " " + req.body.time)
+            console.log(thisDate)
+
+
+
             // Mongoose queries
             Rest.findOne({'rest_name':req.body.restaurant},'_id', function(err, restaurant){
+                var error = [];
                 if(err) return next(err)
                 if(restaurant == null){
                     
@@ -88,12 +95,12 @@ exports.reservation_create_post = [
                         },
                     }, function(err, results) {
                         if (err) { return next(err); }
-                            var error = [];
+                            
                             error.push('Invalid restaurant');
                             findPerson(restaurant,error)
                     });
                 }else{
-                    findPerson(restaurant)
+                    findPerson(restaurant,error)
                 }
             });
 

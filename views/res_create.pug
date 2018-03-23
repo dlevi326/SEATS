@@ -29,7 +29,7 @@ block content
       datalist(id='creator')
         if customers
           for customer in customers
-            option(value=customer.first_name+', '+customer.last_name) #{customer.email}
+            option(value=customer.email) #{customer.first_name+', '+customer.last_name}
       
 
 
