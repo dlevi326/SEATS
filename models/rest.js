@@ -3,8 +3,10 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var RestSchema = new Schema(
-  {
-    rest_name: {type: String, required: true, max: 100},
+{
+    email: {type: String, unique: true, required: true, trim: true},
+    password: {type: String, required: true, max: 20},
+    rest_name: {type: String, required: true, trim: true},
     max_capacity: {type: Number, required: true},
     phone_number: {type: String, required: true, max: 12},
     Address: {type: String, required: true, max: 12},

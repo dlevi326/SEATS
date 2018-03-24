@@ -3,11 +3,11 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var CustomerSchema = new Schema(
-  {
-  	email: {type: String,  required: true, max: 50},
+{
+	email: {type: String, unique: true, required: true, trim: true},
   	password: {type: String, required: true, max: 20},
-    first_name: {type: String, required: true, max: 100},
-    last_name: {type: String, required: true, max: 100},
+   	first_name: {type: String, required: true, trim: true},
+    last_name: {type: String, required: true, trim: true},
     phone_number: {type: String, required: true, max: 12}
   }
 );
