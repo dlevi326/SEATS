@@ -4,6 +4,7 @@ var Rest = require('../models/rest');
 var Cust = require('../models/cust');
 var Res = require('../models/reservations');
 var async = require('async');
+var moment = require('moment');
 
 // Display list of all Authors.
 exports.reservation_list = function(req, res, next) {
@@ -72,10 +73,6 @@ exports.reservation_create_post = [
         else {
             // Data from form is valid.
 
-            // Check date/time
-            var thisDate = new Date(req.body.date + " " + req.body.time)
-            console.log(thisDate)
-
             // Mongoose queries
             Rest.findOne({'rest_name':req.body.restaurant},'_id', function(err, restaurant){
                 var error = [];
@@ -96,9 +93,26 @@ exports.reservation_create_post = [
                             findPerson(restaurant,error)
                     });
                 }else{
-                    findPerson(restaurant,error)
+                    checkTimeWithRest(restaurant,error);
+                    findPerson(restaurant,error);
                 }
             });
+
+            
+
+            checkTimeWithRest = function(restaurant,error){
+
+                Rest.find({'rest_name':req.body.restaurant},'_id', function(err, restaurants){
+                    Res.find({'rest':restaurants},'people_num', function(err, reservations){
+                        console.log(reservations);
+                    });
+                });
+
+
+                // Check date/time
+                //var thisDate = new Date(req.body.date + " " + req.body.time)
+                //console.log(thisDate.getTime())
+            }
 
             findPerson = function(restaurant,error){
                 Cust.findOne({'email':req.body.creator},'_id', function(err, person){

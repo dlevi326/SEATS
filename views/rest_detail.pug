@@ -13,7 +13,7 @@ block content
 				a(href=reservation.url) #{reservation.creator.first_name} #{reservation.creator.last_name}
 				p
 				| Party Size: #{reservation.people_num},
-				| Time: #{reservation.time}
+				| Time: #{reservation.formatDate}
 		else
 			p This Restaurant has no reservations.
 

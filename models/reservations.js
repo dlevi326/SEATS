@@ -24,6 +24,12 @@ ReservationSchema
   return this.creator.first_name+' : '+this.rest.rest_name+' : '+this.date_created_formatted;
 });
 
+ReservationSchema
+.virtual('formatDate')
+.get(function (){
+	return moment(this.date).format('MM/DD/YYYY hh:mm:ss a')
+});
+
 // Virtual for author's URL
 ReservationSchema
 .virtual('url')
