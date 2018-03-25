@@ -111,8 +111,7 @@ exports.reservation_create_post = [
                     Res.find({'rest':restaurants},'people_num date creator').populate('creator').exec(function(err, reservations){
                         if(err){return next(err);}
                         if(reservations==null){
-                            console.log('Error, no reservations found');
-                            return 
+                            findPerson(restaurant,error);
                         }
                         // Error checking reservation time
 
@@ -126,6 +125,7 @@ exports.reservation_create_post = [
                                 console.log(oldDateObj+' '+resDate+' '+newDateObj);
                                 //return;
                                 res.render('res_list',{title: 'Error: Time collision.  Reservations for requested restaurant are listed below', res_list: reservations});
+                                return;
                             }
                             
                         }
@@ -137,11 +137,14 @@ exports.reservation_create_post = [
                         if(resDate<open&&resDate>close){
                             console.log('ERROR: Restaurant is not open at requested time');
                             console.log(open+ ' '+resDate+' '+close);
+                            res.render('res_list',{title: 'Error: Time collision.  Reservations for requested restaurant are listed below', res_list: reservations});
+                            return;
                             
                         }
                         else if(newDateObj1>close){
                             console.log('ERROR: Reservation cannot go past close time');
                             console.log(close);
+                            res.render('res_list',{title: 'Error: Time collision.  Reservations for requested restaurant are listed below', res_list: reservations});
                             return
                         }
                         else{
