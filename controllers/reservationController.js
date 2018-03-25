@@ -94,7 +94,7 @@ exports.reservation_create_post = [
                     });
                 }else{
                     checkTimeWithRest(restaurant,error);
-                    findPerson(restaurant,error);
+                    
                 }
             });
 
@@ -102,9 +102,52 @@ exports.reservation_create_post = [
 
             checkTimeWithRest = function(restaurant,error){
 
-                Rest.find({'rest_name':req.body.restaurant},'_id', function(err, restaurants){
-                    Res.find({'rest':restaurants},'people_num', function(err, reservations){
-                        console.log(reservations);
+                Rest.find({'rest_name':req.body.restaurant},'_id open_time close_time').exec(function(err, restaurants){
+                    if(err){return next(err);}
+                    if(restaurants==null){
+                        console.log('Error, no restaurants found');
+                        return
+                    }
+                    Res.find({'rest':restaurants},'people_num date creator').populate('creator').exec(function(err, reservations){
+                        if(err){return next(err);}
+                        if(reservations==null){
+                            console.log('Error, no reservations found');
+                            return 
+                        }
+                        // Error checking reservation time
+
+                        var resDate = new Date(req.body.date + " " + req.body.time);
+
+                        for (var reserve of reservations){
+                            var oldDateObj = reserve.date;
+                            var newDateObj = moment(reserve.date).add(2, 'h').toDate();
+                            if(newDateObj>=resDate&&resDate<=oldDateObj){
+                                console.log('ERROR: Time Collision');
+                                console.log(oldDateObj+' '+resDate+' '+newDateObj);
+                                //return;
+                                res.render('res_list',{title: 'Error: Time collision.  Reservations for requested restaurant are listed below', res_list: reservations});
+                            }
+                            
+                        }
+                        //console.log('open time --> ' +restaurants[0].open_time)
+                        var open = restaurants[0].open_time
+                        var close = restaurants[0].close_time
+                        var newDateObj1 = moment(resDate.date).add(2, 'h').toDate();
+
+                        if(resDate<open&&resDate>close){
+                            console.log('ERROR: Restaurant is not open at requested time');
+                            console.log(open+ ' '+resDate+' '+close);
+                            
+                        }
+                        else if(newDateObj1>close){
+                            console.log('ERROR: Reservation cannot go past close time');
+                            console.log(close);
+                            return
+                        }
+                        else{
+                            findPerson(restaurant,error);
+                        }
+
                     });
                 });
 
