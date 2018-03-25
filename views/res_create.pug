@@ -22,7 +22,6 @@ block content
           for restaurant in restaurants
             option(value=restaurant.rest_name) #{restaurant.rest_name}
 
-
     div.form-group
       label(for='creator') Customer:
       input(type='text' list='creator' name='creator' placeholder='Select email' required='true')
@@ -30,10 +29,6 @@ block content
         if customers
           for customer in customers
             option(value=customer.email) #{customer.first_name+', '+customer.last_name}
-      
-
-
-
 
     button.btn.btn-primary(type='submit') Submit
   if errors

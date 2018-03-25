@@ -3,6 +3,9 @@ const { sanitizeBody } = require('express-validator/filter');
 var Cust = require('../models/cust');
 var Res = require('../models/reservations');
 var async = require('async');
+var bcrypt = require('bcrypt');
+
+const saltRounds = 10;
 
 // Display list of all Authors.
 exports.customer_list = function(req, res,next) {
@@ -77,18 +80,20 @@ exports.customer_create_post =  [
             // Data from form is valid.
 
             // Create an Author object with escaped and trimmed data.
-            var cust = new Cust(
-                {
-                	email: req.body.email,
-                	password: req.body.password,
-                    first_name: req.body.first_name,
-                    last_name: req.body.last_name,
-                    phone_number: req.body.phone_number
+            bcrypt.hash(req.body.password, saltRounds, function(err, hash){
+                var cust = new Cust(
+                    {
+                    	email: req.body.email,
+                    	password: hash,
+                        first_name: req.body.first_name,
+                        last_name: req.body.last_name,
+                        phone_number: req.body.phone_number
+                    });
+                cust.save(function (err) {
+                    if (err) { return next(err); }
+                    // Successful - redirect to new author record.
+                    res.redirect(cust.url);
                 });
-            cust.save(function (err) {
-                if (err) { return next(err); }
-                // Successful - redirect to new author record.
-                res.redirect(cust.url);
             });
         }
     }

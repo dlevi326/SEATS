@@ -17,6 +17,12 @@ router.get('/', listing.index);
 // Login Routes
 router.get('/users/login',login_controller.login_get);
 
+router.post('/users/login',login_controller.login_post);
+
+router.get('/users/logout', login_controller.logout_get);
+
+router.post('/users/logout', login_controller.logout_post);
+
 // GET request for creating a Customer. NOTE This must come before routes that display Book (uses id).
 router.get('/users/cust/create', cust_controller.customer_create_get);
 

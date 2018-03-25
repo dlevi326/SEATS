@@ -19,7 +19,7 @@ exports.reservation_list = function(req, res, next) {
 exports.reservation_detail = function(req, res, next) {
     async.parallel({
         reservation: function(callback){
-        	Res.findById(req.params.id).populate('creator').exec(callback);
+        	Res.findById(req.params.id).populate('creator').populate('rest').exec(callback);
         },
     }, function(err, results) {
         if (err) { return next(err); }
@@ -76,16 +76,12 @@ exports.reservation_create_post = [
             var thisDate = new Date(req.body.date + " " + req.body.time)
             console.log(thisDate)
 
-
-
             // Mongoose queries
             Rest.findOne({'rest_name':req.body.restaurant},'_id', function(err, restaurant){
                 var error = [];
                 if(err) return next(err)
                 if(restaurant == null){
                     
-
-
                     async.parallel({
                         restaurants: function(callback) {
                             Rest.find(callback);

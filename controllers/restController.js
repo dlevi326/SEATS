@@ -4,6 +4,10 @@ var Rest = require('../models/rest');
 var Cust = require('../models/cust');
 var Res = require('../models/reservations');
 var async = require('async');
+var bcrypt = require('bcrypt');
+
+const saltRounds = 10;
+
 
 // Display list of all Authors.
 exports.rest_list = function(req, res) {
@@ -91,22 +95,26 @@ exports.rest_create_post = [
             console.log(new Date(defaultdate + " " + req.body.open_time))
             console.log(new Date(defaultdate + " " + req.body.close_time))
             // Create an Author object with escaped and trimmed data.
-            var rest = new Rest(
+            bcrypt.hash(req.body.password, saltRounds, function(err, hash){
+                if(err) { return nex(err);}
+                var rest = new Rest(
                 {
                     email: req.body.email,
-                    password: req.body.password,
+                    password: hash,
                     rest_name: req.body.rest_name,
                     max_capacity: req.body.max_capacity,
                     Address: req.body.Address,
                     phone_number: req.body.phone_number,
                     open_time: new Date(defaultdate + " " + req.body.open_time),
                     close_time: new Date(defaultdate + " " + req.body.close_time)
+                    });
+                rest.save(function (err) {
+                    if (err) { return next(err); }
+                    // Successful - redirect to new author record.
+                    res.redirect(rest.url);
                 });
-            rest.save(function (err) {
-                if (err) { return next(err); }
-                // Successful - redirect to new author record.
-                res.redirect(rest.url);
             });
+            
         }
     }
 ];
