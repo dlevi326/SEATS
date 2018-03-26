@@ -111,8 +111,7 @@ exports.reservation_create_post = [
                     Res.find({'rest':restaurants},'people_num date creator').populate('creator').exec(function(err, reservations){
                         if(err){return next(err);}
                         if(reservations==null){
-                            console.log('Error, no reservations found');
-                            return 
+                            findPerson(restaurant,error);
                         }
                         // Error checking reservation time
 
@@ -121,28 +120,35 @@ exports.reservation_create_post = [
                         for (var reserve of reservations){
                             var oldDateObj = reserve.date;
                             var newDateObj = moment(reserve.date).add(2, 'h').toDate();
-                            if(newDateObj>=resDate&&resDate<=oldDateObj){
+                            if(newDateObj>=resDate&&resDate>=oldDateObj){
                                 console.log('ERROR: Time Collision');
                                 console.log(oldDateObj+' '+resDate+' '+newDateObj);
-                                //return;
-                                res.render('res_list',{title: 'Error: Time collision.  Reservations for requested restaurant are listed below', res_list: reservations});
+                                res.render('res_list',{title: 'Error: Time collision. Time coincides with previous reservation.  Reservations for requested restaurant are listed below', res_list: reservations});
+                                return;
                             }
                             
                         }
                         //console.log('open time --> ' +restaurants[0].open_time)
-                        var open = restaurants[0].open_time
-                        var close = restaurants[0].close_time
+                        var open = restaurants[0].open_time.getHours()+':'+restaurants[0].open_time.getMinutes();
+                        var close = restaurants[0].close_time.getHours()+':'+restaurants[0].close_time.getMinutes();
+                        var resTime = resDate.getHours()+':'+resDate.getMinutes();
                         var newDateObj1 = moment(resDate.date).add(2, 'h').toDate();
+                        var newResTime = newDateObj1.getHours()+':'+newDateObj1.getMinutes();
 
-                        if(resDate<open&&resDate>close){
+                        if(resTime<open&&resTime>close){
                             console.log('ERROR: Restaurant is not open at requested time');
-                            console.log(open+ ' '+resDate+' '+close);
+                            console.log(open+ ' '+resTime+' '+close);
+                            res.render('res_list',{title: 'Error: Time collision.  Time is out of bounds for restaurant.  Reservations for requested restaurant are listed below', res_list: reservations});
+                            return;
                             
                         }
-                        else if(newDateObj1>close){
+                        else if(newResTime>close){
                             console.log('ERROR: Reservation cannot go past close time');
+                            console.log(open)
                             console.log(close);
-                            return
+                            console.log(newResTime)
+                            res.render('res_list',{title: 'Error: Time collision.  Time is out of bounds for restaurant.  Reservations for requested restaurant are listed below', res_list: reservations});
+                            return;
                         }
                         else{
                             findPerson(restaurant,error);
@@ -156,6 +162,7 @@ exports.reservation_create_post = [
                 //var thisDate = new Date(req.body.date + " " + req.body.time)
                 //console.log(thisDate.getTime())
             }
+
 
             findPerson = function(restaurant,error){
                 Cust.findOne({'email':req.body.creator},'_id', function(err, person){
