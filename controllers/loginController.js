@@ -37,6 +37,9 @@ exports.login_post =  [
         else {
             Cust.findOne({'email':req.body.email},'_id password', function(err, customer){
                 if(err) return(err);
+                if(customer==null){
+                    findRest();
+                }
                 else{
                     bcrypt.compare(req.body.password, customer.password, function(err, result){
                         if(err) return(err);
@@ -48,6 +51,24 @@ exports.login_post =  [
                     });
                 }
             });
+
+            findRest = function(err, result){
+                Rest.findOne({'email':req.body.email}, '_id password', function(err, restaurant){
+                    if(err) return (err);
+                    if(restaurant==null){
+                        res.render('login', { title: 'SEATS', name: req.body, errors: ["id does not exist"]});
+                    } else{
+                        bcrypt.compare(req.body.password, restaurant.password, function(err, result){
+                            if(err) return (err);
+                            if(result === true){
+                                res.redirect(restaurant.url);
+                            }else{
+                                res.render('login', { title: 'SEATS', name: req.body, errors: ["password does not match"]});
+                            }
+                        });
+                    }
+                });
+            }
         }
     }
 ];
