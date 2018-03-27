@@ -106,7 +106,7 @@ exports.reservation_create_post = [
 
             checkTimeWithRest = function(restaurant,error){
 
-                Rest.find({'rest_name':req.body.restaurant},'_id open_time close_time').exec(function(err, restaurants){
+                Rest.find({'rest_name':req.body.restaurant},'_id open_time close_time max_capacity').exec(function(err, restaurants){
                     if(err){return next(err);}
                     if(restaurants==null){
                         console.log('Error, no restaurants found');
@@ -122,18 +122,26 @@ exports.reservation_create_post = [
 
                         var resDate = new Date(req.body.date + " " + req.body.time);
 
+                        // Error check but allow multiple reservations per time slot
+
+                        var currCapacity = restaurants[0].max_capacity
+
                         for (var reserve of reservations){
                             var oldDateObj = reserve.date;
                             var newDateObj = moment(reserve.date).add(2, 'h').toDate();
-                            if(newDateObj>=resDate&&resDate<=oldDateObj){
-                                console.log('ERROR: Time Collision');
-                                console.log(oldDateObj+' '+resDate+' '+newDateObj);
-                                //return;
-                                res.render('res_list',{title: 'Error: Time collision.  Reservations for requested restaurant are listed below', res_list: reservations});
-                            }
-                            
+                            if(newDateObj>=resDate&&resDate>=oldDateObj){
+                                currCapacity-=reserve.people_num
+                                if((currCapacity-req.body.people_num)<0){
+                                    console.log('ERROR: Time Collision');
+                                    console.log(oldDateObj+' '+resDate+' '+newDateObj);
+                                    console.log(currCapacity);
+                                    
+                                    res.render('res_list',{title: 'Error: Time collision.  Reservations for requested restaurant are listed below', res_list: reservations});
+                                    return;
+                                }    
+                            }  
                         }
-                        //console.log('open time --> ' +restaurants[0].open_time)
+                        
                         var open = restaurants[0].open_time.getHours()+':'+restaurants[0].open_time.getMinutes();
                         var close = restaurants[0].close_time.getHours()+':'+restaurants[0].close_time.getMinutes();
                         var resTime = resDate.getHours()+':'+resDate.getMinutes();
