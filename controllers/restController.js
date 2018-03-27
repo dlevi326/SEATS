@@ -163,3 +163,11 @@ exports.rest_delete_post = function(req, res) {
         }
     });
 };
+
+exports.restaurant_edit_get = function(req, res){
+    res.send("reservation edit get not implemented yet")
+}
+
+exports.restaurant_edit_post = function(req, res){
+    res.send("reservation edit post not implemented yet")
+}

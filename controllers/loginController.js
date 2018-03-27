@@ -5,6 +5,8 @@ var Cust = require('../models/cust');
 var Res = require('../models/reservations');
 var async = require('async');
 var bcrypt = require('bcrypt');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
 
 const saltRounds = 10;
 
@@ -35,7 +37,7 @@ exports.login_post =  [
             return;
         }
         else {
-            Cust.findOne({'email':req.body.email},'_id password', function(err, customer){
+            Cust.findOne({'email':req.body.email},'_id password first_name last_name phone_number', function(err, customer){
                 if(err) return(err);
                 if(customer==null){
                     findRest();
@@ -44,6 +46,7 @@ exports.login_post =  [
                     bcrypt.compare(req.body.password, customer.password, function(err, result){
                         if(err) return(err);
                         if(result === true){
+                            req.session.user = customer;
                             res.redirect(customer.url);
                         } else {
                             res.render('login', { title: 'SEATS', name: req.body, errors: ["password does not match"]});
@@ -53,7 +56,7 @@ exports.login_post =  [
             });
 
             findRest = function(err, result){
-                Rest.findOne({'email':req.body.email}, '_id password', function(err, restaurant){
+                Rest.findOne({'email':req.body.email}, '_id password rest_name', function(err, restaurant){
                     if(err) return (err);
                     if(restaurant==null){
                         res.render('login', { title: 'SEATS', name: req.body, errors: ["id does not exist"]});
@@ -61,6 +64,7 @@ exports.login_post =  [
                         bcrypt.compare(req.body.password, restaurant.password, function(err, result){
                             if(err) return (err);
                             if(result === true){
+                                req.session.user = restaurant;
                                 res.redirect(restaurant.url);
                             }else{
                                 res.render('login', { title: 'SEATS', name: req.body, errors: ["password does not match"]});
@@ -73,10 +77,10 @@ exports.login_post =  [
     }
 ];
 
-exports.logout_get = function(req,res){
-    res.send("Logout get not implemented yet");
+exports.logout = function(req,res){
+    req.session.destroy(function(){
+        console.log("user logged out.")
+    });
+    res.redirect('/');
 }
 
-exports.logout_post = function(req,res){
-    res.send("Logout post not implemented yet");
-}
