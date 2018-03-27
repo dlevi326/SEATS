@@ -49,7 +49,7 @@ router.get('/users/reservation/create', login_controller.auth, reservation_contr
 router.post('/users/reservation/create', reservation_controller.reservation_create_post);
 
 // GET request to delete a Reservation.
-router.get('/users/reservation/:id/delete', login_controller.restAuth, reservation_controller.reservation_delete_get);
+router.get('/users/reservation/:id/delete', login_controller.auth, reservation_controller.reservation_delete_get);
 
 // POST request to delete a Reservation.
 router.post('/users/reservation/:id/delete', reservation_controller.reservation_delete_post);
@@ -76,7 +76,7 @@ router.get('/users/rest/:id/delete', login_controller.restAuth, rest_controller.
 router.post('/users/rest/:id/delete', rest_controller.rest_delete_post);
 
 // GET request for one Restaurant.
-router.get('/users/rest/:id', login_controller.restAuth, rest_controller.rest_detail);
+router.get('/users/rest/:id', rest_controller.rest_detail);
 
 // GET request for list of all Restaurant.
 router.get('/users/rest', rest_controller.rest_list);

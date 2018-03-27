@@ -24,7 +24,11 @@ exports.reservation_detail = function(req, res, next) {
         },
     }, function(err, results) {
         if (err) { return next(err); }
-        res.render('res_detail', { title: 'Reservation Info', error: 'errors', reservation: results.reservation });
+        if(results.reservation.creator._id == req.session.user._id)
+            return res.render('res_detail', { title: 'Reservation Info', error: 'errors', reservation: results.reservation });
+        if(results.reservation.rest._id == req.session.user._id)
+            return res.render('res_detail', { title: 'Reservation Info', error: 'errors', reservation: results.reservation });
+        return res.render('auth_err');
     });
 };
 

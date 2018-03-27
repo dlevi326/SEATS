@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='date') Date:
+      input#date.form-control(type='date', name='date' required='true')
+
+      label(for='time') Time:
+      input#time.form-control(type='time', name='time' required='true')
+
+      label(for='people_num') People Number:
+      input#people_num.form-control(type='text', placeholder='4' name='people_num' required='true') 
+
+    div.form-group
+      label(for='restaurant') Restaurant:
+      input(type='text' list='restaurant' name='restaurant' placeholder='Select restaurant' required='true')
+      datalist(id='restaurant')
+        if restaurants
+          for restaurant in restaurants
+            option(value=restaurant.rest_name) #{restaurant.rest_name}
+
+    button.btn.btn-primary(type='submit') Submit
+  if errors
+    ul
+      for err in errors
+        li #{err}
+
+
+

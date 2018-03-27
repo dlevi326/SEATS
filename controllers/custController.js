@@ -36,7 +36,10 @@ exports.customer_detail = function(req, res, next) {
             return next(err);
         }
         // Successful
-        res.render('customer_detail', {title: 'Customer Detail', customer: results.customer, reservations: results.reservations});
+        if(req.session.user._id == results.customer._id)
+            res.render('customer_detail', {title: 'Customer Detail', customer: results.customer, reservations: results.reservations});
+        else
+            res.render('auth_err')
     });
 };
 
@@ -109,7 +112,7 @@ exports.customer_delete_get = function(req, res, next) {
         },
     }, function(err, results) {
         if (err) { return next(err); }
-        if (results.reservation==null) { // No results.
+        if (results.reservation==null || req.params.id != req.session.user._id) { // No results.
             res.redirect('/users/cust');
         }
         // Successful, so render.
