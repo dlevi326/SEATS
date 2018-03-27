@@ -2,7 +2,21 @@ extends layout
 
 block content
 	h1 Restaurant: #{Restaurant.rest_name}
-	p #{Restaurant.phone_number}
+	p
+	strong Phone number: 
+	| #{Restaurant.phone_number}
+	br
+	strong email: 
+	| #{Restaurant.email}
+	br
+	strong Address: 
+	| #{Restaurant.Address}
+	br
+	strong Open: 
+	| #{Restaurant.openFormatDate}
+	br 
+	strong Close: 
+	| #{Restaurant.closeFormatDate}
 
 	div(style='margin-left:20px;margin-top:20px')
 		h4 Reservations

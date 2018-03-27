@@ -2,7 +2,12 @@ extends layout
 
 block content
 	h1 Customer: #{customer.name}
-	p #{customer.phone_number}
+	p 
+	strong Phone number: 
+	| #{customer.phone_number} 
+	br
+	strong email: 
+	| #{customer.email}
 
 	div(style='margin-left:20px;margin-top:20px')
 		h4 Reservations
@@ -11,9 +16,8 @@ block content
 		each reservation in reservations
 			li
 				a(href=reservation.url) #{reservation.rest.rest_name}
-				p 
-				| Party Size: #{reservation.people_num},
-				| Time: #{reservation.date}
+				
+				p Party Size: #{reservation.people_num}, Time: #{reservation.formatDate}
 		else
 			p This customer has no reservations.
 

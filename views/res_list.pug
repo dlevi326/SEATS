@@ -6,6 +6,7 @@ block content
 	ul
 	each res in res_list
 		li
-			a(href=res.url) #{res.creator.name}
+			a(href=res.url) #{res.creator.name} 
+			p Restaurant name: #{res.rest.rest_name} --> Time: #{res.formatDate}
 	else
 		li There are no reservations logged.

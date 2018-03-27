@@ -169,10 +169,6 @@ exports.reservation_create_post = [
                     });
                 });
 
-
-                // Check date/time
-                //var thisDate = new Date(req.body.date + " " + req.body.time)
-                //console.log(thisDate.getTime())
             }
 
             findPerson = function(restaurant,error){

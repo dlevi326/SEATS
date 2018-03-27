@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var moment = require('moment');
 
 var Schema = mongoose.Schema;
 
@@ -20,6 +21,18 @@ RestSchema
 .virtual('name')
 .get(function () {
   return this.rest_name;
+});
+
+// Formats date
+RestSchema
+.virtual('openFormatDate')
+.get(function (){
+  return moment(this.open_time).format('hh:mm:ss a')
+});
+RestSchema
+.virtual('closeFormatDate')
+.get(function (){
+  return moment(this.close_time).format('hh:mm:ss a')
 });
 
 // Virtual for author's URL
