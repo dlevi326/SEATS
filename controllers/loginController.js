@@ -77,6 +77,26 @@ exports.login_post =  [
     }
 ];
 
+exports.auth = function(req, res, next) {
+    if (req.session.user)
+        return next();
+    return res.render('auth_err');
+};
+
+exports.custAuth = function(req, res, next) {
+    if (req.session.user)
+        if(req.session.user.first_name)
+            return next();
+    return res.render('auth_err');
+};
+
+exports.restAuth = function(req, res, next) {
+    if (req.session.user)
+        if(req.session.user.rest_name)
+            return next();
+    return res.render('auth_err');
+};
+
 exports.logout = function(req,res){
     req.session.destroy(function(){
         console.log("user logged out.")
