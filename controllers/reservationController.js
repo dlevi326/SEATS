@@ -130,19 +130,25 @@ exports.reservation_create_post = [
                             
                         }
                         //console.log('open time --> ' +restaurants[0].open_time)
-                        var open = restaurants[0].open_time
-                        var close = restaurants[0].close_time
+                        var open = restaurants[0].open_time.getHours()+':'+restaurants[0].open_time.getMinutes();
+                        var close = restaurants[0].close_time.getHours()+':'+restaurants[0].close_time.getMinutes();
+                        var resTime = resDate.getHours()+':'+resDate.getMinutes();
                         var newDateObj1 = moment(resDate.date).add(2, 'h').toDate();
+                        var newResTime = newDateObj1.getHours()+':'+newDateObj1.getMinutes();
 
-                        if(resDate<open&&resDate>close){
+                        if(resTime<open&&resTime>close){
                             console.log('ERROR: Restaurant is not open at requested time');
-                            console.log(open+ ' '+resDate+' '+close);
+                            console.log(open+ ' '+resTime+' '+close);
+                            return;
                             
                         }
-                        else if(newDateObj1>close){
+                        else if(newResTime>close){
                             console.log('ERROR: Reservation cannot go past close time');
+                            console.log(open);
                             console.log(close);
-                            return
+                            console.log(newResTime);
+                            res.render('res_list',{title: 'Error: Time collision.  Time is out of bounds for restaurant.  Reservations for requested restaurant are listed below', res_list: reservations});
+                            return;
                         }
                         else{
                             findPerson(restaurant,error);
