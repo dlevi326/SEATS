@@ -121,6 +121,7 @@ exports.reservation_create_post = [
                         // Error checking reservation time
 
                         var resDate = new Date(req.body.date + " " + req.body.time);
+                        console.log(resDate);
 
                         // Error check but allow multiple reservations per time slot
 
@@ -145,7 +146,7 @@ exports.reservation_create_post = [
                         var open = restaurants[0].open_time.getHours()+':'+restaurants[0].open_time.getMinutes();
                         var close = restaurants[0].close_time.getHours()+':'+restaurants[0].close_time.getMinutes();
                         var resTime = resDate.getHours()+':'+resDate.getMinutes();
-                        var newDateObj1 = moment(resDate.date).add(2, 'h').toDate();
+                        var newDateObj1 = moment(resDate).add(2, 'h').toDate();
                         var newResTime = newDateObj1.getHours()+':'+newDateObj1.getMinutes();
 
                         if(resTime<open&&resTime>close){
@@ -159,6 +160,7 @@ exports.reservation_create_post = [
                             console.log(open);
                             console.log(close);
                             console.log(newResTime);
+                            console.log(resDate);
                             res.render('res_list',{title: 'Error: Time collision.  Time is out of bounds for restaurant.  Reservations for requested restaurant are listed below', res_list: reservations});
                             return;
                         }
