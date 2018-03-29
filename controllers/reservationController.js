@@ -253,18 +253,7 @@ exports.reservation_delete_post = function(req, res) {
 
 // Display Author delete form on GET.
 exports.reservation_update_get = function(req, res) {
-        async.parallel({
-        reservation: function(callback) {
-          Res.findById(req.params.id).populate('creator').exec(callback)
-        },
-    }, function(err, results) {
-        if (err) { return next(err); }
-        if (results.reservation==null) { // No results.
-            res.redirect('/users/res');
-        }
-        // Successful, so render.
-        res.render('res_update', { title: 'Update Reservation', reservation: results.reservation } );
-    });
+    res.render('res_update', { title: 'Update Reservation' } );
 };
 
 // Handle Author delete on POST.

@@ -95,7 +95,7 @@ exports.customer_create_post =  [
                 cust.save(function (err) {
                     if (err) { return next(err); }
                     // Successful - redirect to new author record.
-                    res.redirect(cust.url);
+                    res.render('login', {title: 'SEATS'})
                 });
             });
         }
@@ -147,21 +147,23 @@ exports.customer_delete_post = function(req, res) {
 };
 
 
-exports.customer_update_get = function(req,res, next){
-    async.parallel({
-        customer: function(callback) {
-          Cust.findById(req.session.user._id).exec(callback)
-        },
-        reservation: function(callback) {
-          Res.find({'creator': req.session.user._id }).populate('rest creator').exec(callback)
-        },
-    }, function(err, results) {
-        if (err) { return next(err); }
-        // Successful, so render.
-        res.render('cust_update', { title: 'Update Customer', customer: results.customer, reservations: results.reservation } );
-    });
+exports.customer_update_get = function(req,res){
+    // Successful, so render.
+    res.render('cust_update', { title: 'Update Customer' } );
+    
 }
 
 exports.customer_update_post = function(req,res){
-    res.send('Customer update post not implemented yet')
+    // need to check password
+    // implement express validator
+    Cust.findOneAndUpdate({'email': req.session.user.email}, {$set:{first_name: req.body.first_name, last_name:req.body.last_name, phone_number: req.body.phone_number}}, {}, function(err, customer){
+        if(err) {
+            console.log(err);
+            return next(err);
+        }
+        else{
+            console.log(customer);
+            res.redirect(customer.url);
+        }
+    });
 }

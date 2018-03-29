@@ -169,5 +169,19 @@ exports.rest_update_get = function(req, res, next){
 }
 
 exports.rest_update_post = function(req, res){
-    res.send("restaurant edit post not implemented yet")
+    //implement password check
+    //implement express validator
+    var defaultdate = "1970-01-01";
+    var otime = new Date(defaultdate + " " + req.body.open_time);
+    var ctime = new Date(defaultdate + " " + req.body.close_time);
+    Rest.findOneAndUpdate({'email': req.session.user.email}, {$set:{rest_name: req.body.rest_name, Address:req.body.Address, phone_number: req.body.phone_number, max_capacity: req.body.max_capacity, open_time: otime, close_time: ctime}}, {}, function(err, customer){
+        if(err) {
+            console.log(err);
+            return next(err);
+        }
+        else{
+            console.log(customer);
+            res.redirect(customer.url);
+        }
+    });
 }
