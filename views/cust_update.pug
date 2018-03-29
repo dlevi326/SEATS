@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  h1=title
+
+  form(method='POST' action='')
+    div.form-group
+      label(for='password') Password:
+      input#password.form-control(type='password' name='password' trim='true' required='true')
+      label(for='password2') Confirm Password:
+      input#password2.form-control(type='password' name='password2')
+      label(for='first_name') First Name:
+      input#first_name.form-control(type='text', placeholder='Bruce' name='first_name' required='true' )
+      label(for='last_name') Last Name:
+      input#last_name.form-control(type='text', placeholder='Lee' name='last_name' required='true')
+      label(for='phone_number') Phone Number:
+      input#phone_number.form-control(type='tel', placeholder='123-456-7890' name='phone_number')
+    button.btn.btn-primary(type='submit') Submit
+  if errors 
+    ul
+      for error in errors
+        li!= error.msg

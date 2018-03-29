@@ -14,25 +14,65 @@ html(lang='en')
 				div(class='col-sm-2')
 					block sidebar
 						ul(class='sidebar-nav')
-							li
-								a(href='/') Home
-							li 
-								a(href='/users/login') Login
-							li
-								a(href='/users/logout') Logout
-							li
-								a(href='/users/cust') All Customers
-							li 
-								a(href='/users/reservation') All Reservations
-							li 
-								a(href='/users/rest') All Restaurants
-							li 
-								hr
-							li 
-								a(href='/users/rest/create') Create new Restaurant
-							li 
-								a(href='/users/cust/create') Create new Customer
-							li 
-								a(href='/users/reservation/create') Create new Reservation
+							if session.user
+								if session.user.first_name
+									li
+										a(href='/') Home
+									li
+										hr
+									li
+										a(href='/users/change_password') Change Password
+									li
+										a(href='/users/cust/update') Update Account
+									li
+										hr
+									li 
+										a(href='/users/rest') All Restaurants
+									li 
+										a(href='/users/reservation/create') Create Reservation
+									li
+										a(href='/users/res/update') Update Reservation
+									li
+										hr
+									li
+										a(href='/users/logout') Logout
+								if session.user.rest_name
+									li
+										a(href='/') Home
+									li
+										hr
+									li
+										a(href='/users/change_password') Change Password
+									li
+										a(href='/users/rest/update') Update Account
+									li
+										hr
+									li 
+										a(href='/users/rest') All Restaurants
+									li 
+										a(href='/users/reservation/create') Create Reservation
+									li
+										a(href='/users/res/update') Update Reservation
+									li
+										hr
+									li
+										a(href='/users/logout') Logout
+									
+
+							else
+								li
+									a(href='/') Home
+								li 
+									a(href='/users/login') Login
+								li
+									hr
+								li
+									a(href='/users/rest') All Restaurants
+								li 
+									hr
+								li 
+									a(href='/users/cust/create') Create Customer
+								li 
+									a(href='/users/rest/create') Create Restaurant
 				div(class='col-sm-10')
 					block content

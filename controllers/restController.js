@@ -164,10 +164,10 @@ exports.rest_delete_post = function(req, res) {
     });
 };
 
-exports.restaurant_edit_get = function(req, res){
-    res.send("reservation edit get not implemented yet")
+exports.rest_update_get = function(req, res, next){
+    res.render('rest_update', { title: 'Update Restaurant'} );
 }
 
-exports.restaurant_edit_post = function(req, res){
-    res.send("reservation edit post not implemented yet")
+exports.rest_update_post = function(req, res){
+    res.send("restaurant edit post not implemented yet")
 }

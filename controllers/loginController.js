@@ -20,7 +20,7 @@ exports.login_post =  [
     body('email').isLength({ min: 5 }).trim().withMessage('Email should be longer than five characters.')
         .isEmail().withMessage('Not a valid email address.'),
     body('password').isLength({ min: 5 }).trim().withMessage('password should be longer than five characters.'),
-    //body('password2').equals(body('password')).withMessage('password does not match'),
+    //body('password2').isLength({ min: 5 }).trim().withMessage('password should be longer than five characters.'),
     
     // Sanitize fields.
     sanitizeBody('email').trim().escape(),
@@ -37,7 +37,7 @@ exports.login_post =  [
             return;
         }
         else {
-            Cust.findOne({'email':req.body.email},'_id password first_name last_name phone_number', function(err, customer){
+            Cust.findOne({'email':req.body.email},'_id email password first_name last_name phone_number', function(err, customer){
                 if(err) return(err);
                 if(customer==null){
                     findRest();
@@ -56,7 +56,7 @@ exports.login_post =  [
             });
 
             findRest = function(err, result){
-                Rest.findOne({'email':req.body.email}, '_id password rest_name', function(err, restaurant){
+                Rest.findOne({'email':req.body.email}, '_id email password rest_name', function(err, restaurant){
                     if(err) return (err);
                     if(restaurant==null){
                         res.render('login', { title: 'SEATS', name: req.body, errors: ["id does not exist"]});
@@ -76,6 +76,28 @@ exports.login_post =  [
         }
     }
 ];
+
+exports.change_password_get = function(req,res){
+    res.render('change_password', {title: "Change Password"});
+}
+
+exports.change_password_post = function(req,res){
+    if(req.session.user.first_name){
+        Cust.findOneAndUpdate({'email': req.session.user.email}, {$set:{password: req.body.new_password}}, {}, function(err, customer){
+            if(err) {
+                console.log(err);
+                return err;
+            }
+            else{
+                console.log(customer);
+                res.redirect(customer.url);
+            }
+        });
+    }
+    if(req.session.user.rest_name){
+
+    }
+}
 
 exports.auth = function(req, res, next) {
     if (req.session.user)
