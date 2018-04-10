@@ -6,7 +6,7 @@ var Res = require('../models/reservations');
 var async = require('async');
 var moment = require('moment');
 
-// Display list of all Authors.
+// Display list of all Restaurants.
 exports.reservation_list = function(req, res, next) {
 	Res.find().populate('creator rest')
 		.exec(function(err, list_res){
@@ -16,7 +16,7 @@ exports.reservation_list = function(req, res, next) {
 		});
 };
 
-// Display detail page for a specific Author.
+// Display detail page for a specific Restaurant.
 exports.reservation_detail = function(req, res, next) {
     async.parallel({
         reservation: function(callback){
@@ -32,7 +32,7 @@ exports.reservation_detail = function(req, res, next) {
     });
 };
 
-// Display Author create form on GET.
+// Display Restaurant create form on GET.
 exports.reservation_create_get = function(req, res, next) {
 	//res.render('res_create', {title: 'Create Reservation', error: 'errors'})
 
@@ -49,7 +49,7 @@ exports.reservation_create_get = function(req, res, next) {
     });
 };
 
-// Handle Author create on POST.
+// Handle Restaurant create on POST.
 exports.reservation_create_post = [
     // Validate fields.
     body('restaurant').isLength({ min: 1 }).trim().withMessage('Restaurant should be specified.'),
@@ -215,7 +215,7 @@ exports.reservation_create_post = [
     }
 ];
 
-// Display Author delete form on GET.
+// Display Restaurant delete form on GET.
 exports.reservation_delete_get = function(req, res) {
     async.parallel({
         reservation: function(callback) {
@@ -231,7 +231,7 @@ exports.reservation_delete_get = function(req, res) {
     });
 };
 
-// Handle Author delete on POST.
+// Handle Restaurant delete on POST.
 exports.reservation_delete_post = function(req, res) {
     //res.send('NOT IMPLEMENTED: Reservation delete POST');
     async.parallel({
@@ -244,19 +244,19 @@ exports.reservation_delete_post = function(req, res) {
         // No results.
         Res.findByIdAndRemove(req.body.resid, function deleteReservation(err) {
             if (err) { return next(err); }
-            // Success - go to author list
+            // Success - go to restaurant list
             console.log(req.body.resid + " deleted")
             res.redirect('/users/reservation')
         })
     });
 };
 
-// Display Author delete form on GET.
+// Display Restaurant delete form on GET.
 exports.reservation_update_get = function(req, res) {
     res.render('res_update', { title: 'Update Reservation' } );
 };
 
-// Handle Author delete on POST.
+// Handle Restaurant delete on POST.
 exports.reservation_update_post = function(req, res) {
     res.send('NOT IMPLEMENTED: Reservation update POST');
 };

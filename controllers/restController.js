@@ -9,7 +9,7 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 
-// Display list of all Authors.
+// Display list of all Restaurants.
 exports.rest_list = function(req, res) {
 	Rest.find()
 		.exec(function(err, list_rest){
@@ -19,7 +19,7 @@ exports.rest_list = function(req, res) {
 		});
 };
 
-// Display detail page for a specific Author.
+// Display detail page for a specific Restaurant.
 exports.rest_detail = function(req, res, next) {
     //res.send('NOT IMPLEMENTED: Rest detail: ' + req.params.id);
      async.parallel({
@@ -43,13 +43,13 @@ exports.rest_detail = function(req, res, next) {
     });
 };
 
-// Display Author create form on GET.
+// Display Restaurant create form on GET.
 exports.rest_create_get = function(req, res) {
     //res.send('NOT IMPLEMENTED: Rest create GET');
 	res.render('rest_create', {title: 'Create Restaurant', error: 'errors'})
 };
 
-// Handle Author create on POST.
+// Handle Restaurant create on POST.
 exports.rest_create_post = [
     // Validate fields.
     body('email').isLength({ min: 5 }).trim().withMessage('Email should be longer than five characters.')
@@ -94,7 +94,7 @@ exports.rest_create_post = [
             var defaultdate = "1970-01-01"
             console.log(new Date(defaultdate + " " + req.body.open_time))
             console.log(new Date(defaultdate + " " + req.body.close_time))
-            // Create an Author object with escaped and trimmed data.
+            // Create an Restaurant object with escaped and trimmed data.
             bcrypt.hash(req.body.password, saltRounds, function(err, hash){
                 if(err) { return nex(err);}
                 var rest = new Rest(
@@ -110,7 +110,7 @@ exports.rest_create_post = [
                     });
                 rest.save(function (err) {
                     if (err) { return next(err); }
-                    // Successful - redirect to new author record.
+                    // Successful - redirect to new Restaurant record.
                     res.redirect(rest.url);
                 });
             });
@@ -119,7 +119,7 @@ exports.rest_create_post = [
     }
 ];
 
-// Display Author delete form on GET.
+// Display Restaurant delete form on GET.
 exports.rest_delete_get = function(req, res,next) {
     async.parallel({
         rest: function(callback) {
@@ -138,7 +138,7 @@ exports.rest_delete_get = function(req, res,next) {
     });
 };
 
-// Handle Author delete on POST.
+// Handle Restaurant delete on POST.
 exports.rest_delete_post = function(req, res) {
     async.parallel({
         rest: function(callback) {
@@ -156,7 +156,7 @@ exports.rest_delete_post = function(req, res) {
             // No results.
             Rest.findByIdAndRemove(req.body.restid, function deleteRest(err) {
                 if (err) { return next(err); }
-                // Success - go to author list
+                // Success - go to Restaurant list
                 console.log(req.body.restid + " deleted")
                 res.redirect('/users/rest')
             })
