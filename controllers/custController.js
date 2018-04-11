@@ -7,7 +7,7 @@ var bcrypt = require('bcrypt');
 
 const saltRounds = 10;
 
-// Display list of all Authors.
+// Display list of all Customers.
 exports.customer_list = function(req, res,next) {
     Cust.find({}, 'first_name last_name phone_number address')
     	.exec(function(err, list_cust){
@@ -17,7 +17,7 @@ exports.customer_list = function(req, res,next) {
     	});
 };
 
-// Display detail page for a specific Author.
+// Display detail page for a specific Customer.
 exports.customer_detail = function(req, res, next) {
     async.parallel({
         customer: function(callback){
@@ -43,7 +43,7 @@ exports.customer_detail = function(req, res, next) {
     });
 };
 
-// Display Author create form on GET.
+// Display Customer create form on GET.
 exports.customer_create_get = function(req, res) {
     res.render('cust_form', { title: 'Create Customer'});
 };
@@ -71,18 +71,22 @@ exports.customer_create_post =  [
 
     // Process request after validation and sanitization.
     (req, res, next) => {
-
         // Extract the validation errors from a request.
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             // There are errors. Render form again with sanitized values/errors messages.
             res.render('cust_form', { title: 'Create Customer', name: req.body, errors: errors.array() });
             return;
+        }else if(req.body.password != req.body.password2){
+
+            var error_list = errors.array();
+            error_list.push('password does not match');
+            res.render('cust_form', { title: 'Create Customer', name: req.body, errors: error_list });
+            return;
         }
         else {
             // Data from form is valid.
-
-            // Create an Author object with escaped and trimmed data.
+            // Create an Customer object with escaped and trimmed data.
             bcrypt.hash(req.body.password, saltRounds, function(err, hash){
                 var cust = new Cust(
                     {
@@ -94,8 +98,8 @@ exports.customer_create_post =  [
                     });
                 cust.save(function (err) {
                     if (err) { return next(err); }
-                    // Successful - redirect to new author record.
-                    res.render('login', {title: 'SEATS'})
+                    // Successful - redirect to new Customer record.
+                    else res.render('login', {title: 'SEATS'})
                 });
             });
         }
@@ -120,7 +124,7 @@ exports.customer_delete_get = function(req, res, next) {
     });
 };
 
-// Handle Author delete on POST.
+// Handle Customer delete on POST.
 exports.customer_delete_post = function(req, res) {
     async.parallel({
         customer: function(callback) {
@@ -138,9 +142,10 @@ exports.customer_delete_post = function(req, res) {
         	// No results.
             Cust.findByIdAndRemove(req.body.custid, function deleteCustomer(err) {
                 if (err) { return next(err); }
-                // Success - go to author list
+                // Success - go to Customer list
                 console.log(req.body.custid + " deleted")
-                res.redirect('/users/cust')
+                req.session.destroy();
+                res.redirect('/')
             })
         }
     });
@@ -160,8 +165,11 @@ exports.customer_update_post = function(req,res){
         if(err) {
             console.log(err);
             return next(err);
-        }
-        else{
+        }else if(req.body.password != req.body.password2){
+
+            res.render('cust_form', { title: 'Create Customer', name: req.body, errors: ['password does not match'] });
+            return;
+        } else{
             console.log(customer);
             res.redirect(customer.url);
         }

@@ -14,21 +14,23 @@ block content
       label(for='people_num') People Number:
       input#people_num.form-control(type='text', placeholder='4' name='people_num' required='true') 
 
-    div.form-group
-      label(for='restaurant') Restaurant:
-      input(type='text' list='restaurant' name='restaurant' placeholder='Select restaurant' required='true')
-      datalist(id='restaurant')
-        if restaurants
-          for restaurant in restaurants
-            option(value=restaurant.rest_name) #{restaurant.rest_name}
-
-    div.form-group
-      label(for='creator') Customer:
-      input(type='text' list='creator' name='creator' placeholder='Select email' required='true')
-      datalist(id='creator')
-        if customers
-          for customer in customers
-            option(value=customer.email) #{customer.first_name+', '+customer.last_name}
+    if session.user.first_name
+      div.form-group
+        label(for='restaurant') Restaurant:
+        input(type='text' list='restaurant' name='restaurant' placeholder='Select restaurant')
+        datalist(id='restaurant')
+          if restaurants
+            for restaurant in restaurants
+              option(value=restaurant.rest_name) #{restaurant.rest_name}
+              
+    if session.user.rest_name
+      div.form-group
+        label(for='creator') Customer:
+        input(type='text' list='creator' name='creator' placeholder='Select email')
+        datalist(id='creator')
+          if customers
+            for customer in customers
+              option(value=customer.email) #{customer.first_name+', '+customer.last_name}
 
     button.btn.btn-primary(type='submit') Submit
   if errors

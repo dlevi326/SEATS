@@ -9,7 +9,7 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 
-// Display list of all Restaurants.
+// Display list of all Restaurantss.
 exports.rest_list = function(req, res) {
 	Rest.find()
 		.exec(function(err, list_rest){
@@ -19,7 +19,7 @@ exports.rest_list = function(req, res) {
 		});
 };
 
-// Display detail page for a specific Restaurant.
+// Display detail page for a specific Restaurants.
 exports.rest_detail = function(req, res, next) {
     //res.send('NOT IMPLEMENTED: Rest detail: ' + req.params.id);
      async.parallel({
@@ -43,13 +43,13 @@ exports.rest_detail = function(req, res, next) {
     });
 };
 
-// Display Restaurant create form on GET.
+// Display Restaurants create form on GET.
 exports.rest_create_get = function(req, res) {
     //res.send('NOT IMPLEMENTED: Rest create GET');
 	res.render('rest_create', {title: 'Create Restaurant', error: 'errors'})
 };
 
-// Handle Restaurant create on POST.
+// Handle Restaurants create on POST.
 exports.rest_create_post = [
     // Validate fields.
     body('email').isLength({ min: 5 }).trim().withMessage('Email should be longer than five characters.')
@@ -57,15 +57,10 @@ exports.rest_create_post = [
     body('password').isLength({ min: 5 }).trim().withMessage('password should be longer than five characters.'),
     //body('password2').equals(body('password')).withMessage('password does not match'),
     body('rest_name').isLength({ min: 1 }).trim().withMessage('Restaurant name must be specified.'),
-
     body('Address').isLength({ min: 1 }).trim().withMessage('Address must be specified.'),
-
     body('max_capacity').isLength({ min: 1 }).trim().withMessage('Max capacity must be specified.'),
-
     body('phone_number').isLength({ min: 1 }).trim().withMessage('Phone number must be specified.'),
-       
     body('open_time').isLength({ min: 1 }).trim().withMessage('Open time must be specified.'),
-
     body('close_time').isLength({ min: 1 }).trim().withMessage('Close time must be specified.'),
     
     // Sanitize fields.
@@ -88,13 +83,16 @@ exports.rest_create_post = [
             // There are errors. Render form again with sanitized values/errors messages.
             res.render('rest_create', { title: 'Create Customer', errors: errors.array() });
             return;
-        }
-        else {
+        }else if(req.body.password != req.body.password2){
+
+            res.render('cust_form', { title: 'Create Customer', name: req.body, errors: ['password does not match'] });
+            return;
+        } else {
             // Data from form is valid.
             var defaultdate = "1970-01-01"
             console.log(new Date(defaultdate + " " + req.body.open_time))
             console.log(new Date(defaultdate + " " + req.body.close_time))
-            // Create an Restaurant object with escaped and trimmed data.
+            // Create an Restaurants object with escaped and trimmed data.
             bcrypt.hash(req.body.password, saltRounds, function(err, hash){
                 if(err) { return nex(err);}
                 var rest = new Rest(
@@ -110,7 +108,7 @@ exports.rest_create_post = [
                     });
                 rest.save(function (err) {
                     if (err) { return next(err); }
-                    // Successful - redirect to new Restaurant record.
+                    // Successful - redirect to new Restaurants record.
                     res.redirect(rest.url);
                 });
             });
@@ -119,7 +117,7 @@ exports.rest_create_post = [
     }
 ];
 
-// Display Restaurant delete form on GET.
+// Display Restaurants delete form on GET.
 exports.rest_delete_get = function(req, res,next) {
     async.parallel({
         rest: function(callback) {
@@ -138,7 +136,7 @@ exports.rest_delete_get = function(req, res,next) {
     });
 };
 
-// Handle Restaurant delete on POST.
+// Handle Restaurants delete on POST.
 exports.rest_delete_post = function(req, res) {
     async.parallel({
         rest: function(callback) {
@@ -156,9 +154,10 @@ exports.rest_delete_post = function(req, res) {
             // No results.
             Rest.findByIdAndRemove(req.body.restid, function deleteRest(err) {
                 if (err) { return next(err); }
-                // Success - go to Restaurant list
+                // Success - go to Restaurants list
                 console.log(req.body.restid + " deleted")
-                res.redirect('/users/rest')
+                req.session.destroy()
+                res.redirect('/')
             })
         }
     });
@@ -178,6 +177,10 @@ exports.rest_update_post = function(req, res){
         if(err) {
             console.log(err);
             return next(err);
+        }else if(req.body.password != req.body.password2){
+
+            res.render('cust_form', { title: 'Create Customer', name: req.body, errors: ['password does not match'] });
+            return;
         }
         else{
             console.log(customer);

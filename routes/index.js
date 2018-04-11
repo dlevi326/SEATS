@@ -38,7 +38,7 @@ router.get('/users/cust/:id/delete', login_controller.custAuth, cust_controller.
 // POST request to delete a Customer.
 router.post('/users/cust/:id/delete', cust_controller.customer_delete_post);
 
-router.get('/users/cust/update', cust_controller.customer_update_get);
+router.get('/users/cust/update', login_controller.custAuth, cust_controller.customer_update_get);
 
 router.post('/users/cust/update', cust_controller.customer_update_post);
 
@@ -46,7 +46,7 @@ router.post('/users/cust/update', cust_controller.customer_update_post);
 router.get('/users/cust/:id', login_controller.custAuth, cust_controller.customer_detail);
 
 // GET request for list of all Customers.
-router.get('/users/cust', cust_controller.customer_list);
+router.get('/users/cust', login_controller.auth, cust_controller.customer_list);
 
 /// Reservation ROUTES ///
 
@@ -63,18 +63,18 @@ router.get('/users/reservation/:id/delete', login_controller.auth, reservation_c
 // POST request to delete a Reservation.
 router.post('/users/reservation/:id/delete', reservation_controller.reservation_delete_post);
 
-router.get('/users/reservation/update', reservation_controller.reservation_update_get);
+router.get('/users/reservation/update', login_controller.auth, reservation_controller.reservation_update_get);
 
 router.post('/users/reservation/update', reservation_controller.reservation_update_post);
 
 // GET request for one Reservation.
 router.get('/users/reservation/:id', login_controller.auth, reservation_controller.reservation_detail);
 
+//this should be removed at the end
 // GET request for list of all Reservations.
-router.get('/users/reservation', reservation_controller.reservation_list);
+router.get('/users/reservation', login_controller.auth, reservation_controller.reservation_list);
 
 /// Restaurant ROUTES ///
-
 // GET request for creating a Restaurant.
 
 router.get('/users/rest/create', rest_controller.rest_create_get);
@@ -88,7 +88,7 @@ router.get('/users/rest/:id/delete', login_controller.restAuth, rest_controller.
 // POST request to delete a Restaurant.
 router.post('/users/rest/:id/delete', rest_controller.rest_delete_post);
 
-router.get('/users/rest/update', rest_controller.rest_update_get);
+router.get('/users/rest/update', login_controller.restAuth, rest_controller.rest_update_get);
 
 router.post('/users/rest/update', rest_controller.rest_update_post);
 

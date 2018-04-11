@@ -18,19 +18,21 @@ block content
 	strong Close: 
 	| #{Restaurant.closeFormatDate}
 
-	div(style='margin-left:20px;margin-top:20px')
-		h4 Reservations
+	if session.user
+		if session.user.rest_name == Restaurant.rest_name
+			div(style='margin-left:20px;margin-top:20px')
+				h4 Reservations
 
-		dl
-		each reservation in reservations
-			li
-				a(href=reservation.url) #{reservation.creator.first_name} #{reservation.creator.last_name}
-				p
-				| Party Size: #{reservation.people_num},
-				| Time: #{reservation.formatDate}
-		else
-			p This Restaurant has no reservations.
+				dl
+				each reservation in reservations
+					li
+						a(href=reservation.url) #{reservation.creator.first_name} #{reservation.creator.last_name}
+						p
+						| Party Size: #{reservation.people_num},
+						| Time: #{reservation.formatDate}
+				else
+					p This Restaurant has no reservations.
 
-	hr
-	p
-		a(href=Restaurant.url+'/delete') Delete restaurant
+			hr
+			p
+				a(href=Restaurant.url+'/delete') Delete restaurant

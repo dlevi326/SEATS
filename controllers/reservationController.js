@@ -6,7 +6,7 @@ var Res = require('../models/reservations');
 var async = require('async');
 var moment = require('moment');
 
-// Display list of all Restaurants.
+// Display list of all Reservations.
 exports.reservation_list = function(req, res, next) {
 	Res.find().populate('creator rest')
 		.exec(function(err, list_res){
@@ -16,7 +16,7 @@ exports.reservation_list = function(req, res, next) {
 		});
 };
 
-// Display detail page for a specific Restaurant.
+// Display detail page for a specific Reservation.
 exports.reservation_detail = function(req, res, next) {
     async.parallel({
         reservation: function(callback){
@@ -32,7 +32,7 @@ exports.reservation_detail = function(req, res, next) {
     });
 };
 
-// Display Restaurant create form on GET.
+// Display Reservation create form on GET.
 exports.reservation_create_get = function(req, res, next) {
 	//res.render('res_create', {title: 'Create Reservation', error: 'errors'})
 
@@ -49,21 +49,23 @@ exports.reservation_create_get = function(req, res, next) {
     });
 };
 
-// Handle Restaurant create on POST.
+// Handle Reservation create on POST.
 exports.reservation_create_post = [
     // Validate fields.
-    body('restaurant').isLength({ min: 1 }).trim().withMessage('Restaurant should be specified.'),
+    //body('restaurant').isLength({ min: 1 }).trim().withMessage('Restaurant should be specified.'),
     body('date').isLength({ min: 1}).trim().withMessage('Date must be specified.'),
     body('time').isLength({ min: 1 }).trim().withMessage('Time must be specified.'),
     body('people_num').isLength({ min: 1 }).trim().withMessage('People number must be specified.'),
-    body('creator').isLength({ min: 1 }).trim().withMessage('Creator must be specified.'),
+    //body('creator').isLength({ min: 1 }).trim().withMessage('Creator must be specified.'),
+    
     // Sanitize fields.
-    sanitizeBody('restaurant').trim().escape(),
+    //sanitizeBody('restaurant').trim().escape(),
     sanitizeBody('date').trim().escape(),
     sanitizeBody('time').trim().escape(),
     sanitizeBody('people_num').trim().escape(),
-    sanitizeBody('creator').trim().escape(),
+    //sanitizeBody('creator').trim().escape(),
     
+
     // Process request after validation and sanitization.
     (req, res, next) => {
 
@@ -76,9 +78,17 @@ exports.reservation_create_post = [
         }
         else {
             // Data from form is valid.
-
+            if(req.session.user.first_name){
+                var rest_name = req.body.restaurant;
+                var cust = req.session.user.email;
+            }else{
+                var rest_name = req.session.user.rest_name;
+                var cust = req.body.creator;
+            }
+            console.log(rest_name);
+            console.log(cust);
             // Mongoose queries
-            Rest.findOne({'rest_name':req.body.restaurant},'_id', function(err, restaurant){
+            Rest.findOne({'rest_name':rest_name},'_id', function(err, restaurant){
                 var error = [];
                 if(err) return next(err)
                 if(restaurant == null){
@@ -102,11 +112,9 @@ exports.reservation_create_post = [
                 }
             });
 
-            
-
             checkTimeWithRest = function(restaurant,error){
 
-                Rest.find({'rest_name':req.body.restaurant},'_id open_time close_time people_num').exec(function(err, restaurants){
+                Rest.find({'rest_name':rest_name},'_id open_time close_time people_num').exec(function(err, restaurants){
                     if(err){return next(err);}
                     if(restaurants==null){
                         console.log('Error, no restaurants found');
@@ -170,7 +178,7 @@ exports.reservation_create_post = [
             }
 
             findPerson = function(restaurant,error){
-                Cust.findOne({'email':req.body.creator},'_id', function(err, person){
+                Cust.findOne({'email':cust},'_id', function(err, person){
                     if(err) return next(err)
                     if(person == null){
 
@@ -209,13 +217,11 @@ exports.reservation_create_post = [
                     res.redirect(reservation.url)
                 })
             }
-            
-
         }
     }
 ];
 
-// Display Restaurant delete form on GET.
+// Display Reservation delete form on GET.
 exports.reservation_delete_get = function(req, res) {
     async.parallel({
         reservation: function(callback) {
@@ -224,14 +230,14 @@ exports.reservation_delete_get = function(req, res) {
     }, function(err, results) {
         if (err) { return next(err); }
         if (results.reservation==null) { // No results.
-            res.redirect('/users/res');
+            res.redirect('/');
         }
         // Successful, so render.
         res.render('res_delete', { title: 'Delete Reservation', reservation: results.reservation } );
     });
 };
 
-// Handle Restaurant delete on POST.
+// Handle Reservation delete on POST.
 exports.reservation_delete_post = function(req, res) {
     //res.send('NOT IMPLEMENTED: Reservation delete POST');
     async.parallel({
@@ -244,19 +250,19 @@ exports.reservation_delete_post = function(req, res) {
         // No results.
         Res.findByIdAndRemove(req.body.resid, function deleteReservation(err) {
             if (err) { return next(err); }
-            // Success - go to restaurant list
+            // Success - go to Reservation list
             console.log(req.body.resid + " deleted")
-            res.redirect('/users/reservation')
+            res.redirect('/')
         })
     });
 };
 
-// Display Restaurant delete form on GET.
+// Display Reservation delete form on GET.
 exports.reservation_update_get = function(req, res) {
     res.render('res_update', { title: 'Update Reservation' } );
 };
 
-// Handle Restaurant delete on POST.
+// Handle Reservation delete on POST.
 exports.reservation_update_post = function(req, res) {
     res.send('NOT IMPLEMENTED: Reservation update POST');
 };
