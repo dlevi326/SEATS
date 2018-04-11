@@ -256,25 +256,3 @@ exports.reservation_delete_post = function(req, res) {
         })
     });
 };
-
-// Display Reservation delete form on GET.
-exports.reservation_update_get = function(req, res) {
-    res.render('res_update', { title: 'Update Reservation' } );
-};
-
-// Handle Reservation delete on POST.
-exports.reservation_update_post = function(req, res) {
-    res.send('NOT IMPLEMENTED: Reservation update POST');
-};
-
-
-
-
-
-
-
-
-
-
-
-

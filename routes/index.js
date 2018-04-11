@@ -63,10 +63,6 @@ router.get('/users/reservation/:id/delete', login_controller.auth, reservation_c
 // POST request to delete a Reservation.
 router.post('/users/reservation/:id/delete', reservation_controller.reservation_delete_post);
 
-router.get('/users/reservation/update', login_controller.auth, reservation_controller.reservation_update_get);
-
-router.post('/users/reservation/update', reservation_controller.reservation_update_post);
-
 // GET request for one Reservation.
 router.get('/users/reservation/:id', login_controller.auth, reservation_controller.reservation_detail);
 
