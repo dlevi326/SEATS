@@ -1,1 +1,5 @@
-Test #1 for SEATS
+Test Case #1
+
+Title: Create Customer - Creating a Customer Account Successfully
+
+Description: 
