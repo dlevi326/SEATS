@@ -114,7 +114,7 @@ exports.reservation_create_post = [
 
             checkTimeWithRest = function(restaurant,error){
 
-                Rest.find({'rest_name':rest_name},'_id open_time close_time people_num').exec(function(err, restaurants){
+                Rest.find({'rest_name':rest_name},'_id open_time close_time people_num max_capacity').exec(function(err, restaurants){
                     if(err){return next(err);}
                     if(restaurants==null){
                         console.log('Error, no restaurants found');
@@ -132,9 +132,15 @@ exports.reservation_create_post = [
                         console.log(resDate);
 
                         // Error check but allow multiple reservations per time slot
-
+                        // Chris Implementation
+                        console.log(restaurants[0]);
                         var currCapacity = restaurants[0].max_capacity
-
+                        console.log(currCapacity);
+                        if((currCapacity-req.body.people_num)<0){
+                            console.log('ERROR: Time Collision.  Conflicts with other reservations and restaurant is over capacity.');
+							return res.render('res_list',{title: 'Error: Over Capacity.  Reservations for requested restaurant are listed below:', res_list: reservations});                                              
+                        }
+                        // End Implementation
                         for (var reserve of reservations){
                             var oldDateObj = reserve.date;
                             var newDateObj = moment(reserve.date).add(2, 'h').toDate();
@@ -144,7 +150,7 @@ exports.reservation_create_post = [
                                     console.log('ERROR: Time Collision.  Conflicts with other reservations and restaurant is over capacity.');
                                     console.log(oldDateObj+' '+resDate+' '+newDateObj);
                                     console.log(currCapacity); 
-                                    res.render('res_list',{title: 'Error: Time collision.  Reservations for requested restaurant are listed below:', res_list: reservations});
+                                    return res.render('res_list',{title: 'Error: Time collision.  Reservations for requested restaurant are listed below:', res_list: reservations});
                                 }    
                             }  
                         }
@@ -158,7 +164,7 @@ exports.reservation_create_post = [
                         if(resTime<open&&resTime>close){
                             console.log('ERROR: Restaurant is not open at requested time');
                             console.log(open+ ' '+resTime+' '+close);
-                            res.render('res_list',{title: 'Error: Time collision.  Restaurant is not open at requested time.  Reservations for requested restaurant are listed below', res_list: reservations});
+                            return res.render('res_list',{title: 'Error: Time collision.  Restaurant is not open at requested time.  Reservations for requested restaurant are listed below', res_list: reservations});
                         }
                         else if(newResTime>close){
                             console.log('ERROR: Reservation cannot go past close time');
@@ -166,7 +172,7 @@ exports.reservation_create_post = [
                             console.log(close);
                             console.log(newResTime);
                             console.log(resDate);
-                            res.render('res_list',{title: 'Error: Time collision.  Time is out of bounds for restaurant.  Reservations for requested restaurant are listed below', res_list: reservations});
+                            return res.render('res_list',{title: 'Error: Time collision.  Time is out of bounds for restaurant.  Reservations for requested restaurant are listed below', res_list: reservations});
                         }
                         else{
                             findPerson(restaurant,error);
