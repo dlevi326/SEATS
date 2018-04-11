@@ -99,7 +99,7 @@ exports.customer_create_post =  [
                 cust.save(function (err) {
                     if (err) { return next(err); }
                     // Successful - redirect to new Customer record.
-                    else res.render('login', {title: 'SEATS'})
+                    else res.redirect('/users/login')
                 });
             });
         }
