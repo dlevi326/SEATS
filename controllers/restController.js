@@ -88,30 +88,39 @@ exports.rest_create_post = [
             res.render('cust_form', { title: 'Create Customer', name: req.body, errors: ['password does not match'] });
             return;
         } else {
-            // Data from form is valid.
-            var defaultdate = "1970-01-01"
-            console.log(new Date(defaultdate + " " + req.body.open_time))
-            console.log(new Date(defaultdate + " " + req.body.close_time))
-            // Create an Restaurants object with escaped and trimmed data.
-            bcrypt.hash(req.body.password, saltRounds, function(err, hash){
-                if(err) { return nex(err);}
-                var rest = new Rest(
-                {
-                    email: req.body.email,
-                    password: hash,
-                    rest_name: req.body.rest_name,
-                    max_capacity: req.body.max_capacity,
-                    Address: req.body.Address,
-                    phone_number: req.body.phone_number,
-                    open_time: new Date(defaultdate + " " + req.body.open_time),
-                    close_time: new Date(defaultdate + " " + req.body.close_time)
+            Cust.findOne({'email':req.body.email},'_id email', function (err, customer) {
+                var error = [];
+                if(err) return next(err)
+                if(customer == null){
+                    // Data from form is valid.
+                    var defaultdate = "1970-01-01"
+                    // Create an Restaurants object with escaped and trimmed data.
+                    bcrypt.hash(req.body.password, saltRounds, function(err, hash){
+                        if(err) { return nex(err);}
+                        var rest = new Rest(
+                        {
+                            email: req.body.email,
+                            password: hash,
+                            rest_name: req.body.rest_name,
+                            max_capacity: req.body.max_capacity,
+                            Address: req.body.Address,
+                            phone_number: req.body.phone_number,
+                            open_time: new Date(defaultdate + " " + req.body.open_time),
+                            close_time: new Date(defaultdate + " " + req.body.close_time)
+                            });
+                        rest.save(function (err) {
+                            if (err) { return next(err); }
+                            // Successful - redirect to new Restaurants record.
+                            res.redirect('/users/login');
+                            return
+                        });
                     });
-                rest.save(function (err) {
-                    if (err) { return next(err); }
-                    // Successful - redirect to new Restaurants record.
-                    res.redirect(rest.url);
-                });
-            });
+                }else{
+
+                    res.render('rest_create', {title:'Create Restaurant', name: req.body, errors: errors.array()});
+                    return;
+                }
+            })
             
         }
     }
