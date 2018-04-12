@@ -17,6 +17,10 @@ block content
 	br 
 	strong Close: 
 	| #{Restaurant.closeFormatDate}
+	br
+	strong Capacity: 
+	| #{Restaurant.max_capacity}
+	
 
 	if session.user
 		if session.user.rest_name == Restaurant.rest_name
@@ -29,7 +33,8 @@ block content
 						a(href=reservation.url) #{reservation.creator.first_name} #{reservation.creator.last_name}
 						p
 						| Party Size: #{reservation.people_num},
-						| Time: #{reservation.formatDate}
+						| Time: #{reservation.formatDate},
+						| Phone Number: #{reservation.creator.phone_number}
 				else
 					p This Restaurant has no reservations.
 

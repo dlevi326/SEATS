@@ -16,7 +16,8 @@ block content
 
       label(for='max_capacity') Max Capacity:
       input#max_capacity.form-control(type='text', placeholder='999' name='max_capacity' required='true' value=(undefined===rest ? '' : Rest.max_capacity))
-
+      i **Warning** It is your responsibility to contact customers and potentially delete reservations if this change will interfere with the incoming customers you have.
+      br 
       label(for='phone_number') Phone Number:
       input#phone_number.form-control(type='tel', placeholder='123-456-7890' name='phone_number', value=(undefined===rest ? '' : Rest.phone_number) )
       label(for='open_time') Open Time:

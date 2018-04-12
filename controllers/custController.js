@@ -1,6 +1,7 @@
 const { body,validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 var Cust = require('../models/cust');
+var Rest = require('../models/rest');
 var Res = require('../models/reservations');
 var async = require('async');
 var bcrypt = require('bcrypt');
@@ -85,23 +86,34 @@ exports.customer_create_post =  [
             return;
         }
         else {
-            // Data from form is valid.
-            // Create an Customer object with escaped and trimmed data.
-            bcrypt.hash(req.body.password, saltRounds, function(err, hash){
-                var cust = new Cust(
-                    {
-                    	email: req.body.email,
-                    	password: hash,
-                        first_name: req.body.first_name,
-                        last_name: req.body.last_name,
-                        phone_number: req.body.phone_number
+            Rest.findOne({'email':req.body.email},'_id email', function (err, restaurant) {
+                var error = [];
+                if(err) return next(err)
+                if(restaurant == null){
+                    // Data from form is valid.
+                    // Create an Customer object with escaped and trimmed data.
+                    bcrypt.hash(req.body.password, saltRounds, function(err, hash){
+                        var cust = new Cust(
+                            {
+                                email: req.body.email,
+                                password: hash,
+                                first_name: req.body.first_name,
+                                last_name: req.body.last_name,
+                                phone_number: req.body.phone_number
+                            });
+                        cust.save(function (err) {
+                            if (err) { return next(err); }
+                            // Successful - redirect to new Customer record.
+                            else res.redirect('/users/login')
+                            return
+                        });
                     });
-                cust.save(function (err) {
-                    if (err) { return next(err); }
-                    // Successful - redirect to new Customer record.
-                    else res.redirect('/users/login')
-                });
-            });
+                }else{
+
+                    res.render('cust_form', { title: 'Create Customer', name: req.body, errors: error_list });
+                    return;
+                }
+            })
         }
     }
 ];

@@ -112,6 +112,7 @@ exports.reservation_create_post = [
                 }
             });
 
+
             checkTimeWithRest = function(restaurant,error){
 
                 Rest.find({'rest_name':rest_name},'_id open_time close_time people_num max_capacity').exec(function(err, restaurants){
@@ -124,10 +125,10 @@ exports.reservation_create_post = [
                         if(err){return next(err);}
                         if(reservations==null){
                             console.log('Error, no reservations found');
-                            res.render('rest_detail', {title: 'Error: No reservations found.  Restaurant Details:', Restaurant: results.rest, reservations: results.reservations});
+                            return res.render('rest_detail', {title: 'Error: No reservations found.  Restaurant Details:', Restaurant: results.rest, reservations: results.reservations});
                         }
                         // Error checking reservation time
-
+                        var currDate = new Date();
                         var resDate = new Date(req.body.date + " " + req.body.time);
                         console.log(resDate);
 
@@ -136,6 +137,13 @@ exports.reservation_create_post = [
                         console.log(restaurants[0]);
                         var currCapacity = restaurants[0].max_capacity
                         console.log(currCapacity);
+
+                        if (resDate < currDate || resDate > moment(currDate).add(3, 'M').toDate()) {
+                        	console.log('ERROR: Time Collision.  Invalid Time: Time set before current date or after 3 months');
+							return res.render('res_list',{title: 'ERROR: Time Collision.  Invalid Time: Time set before current date or after 3 months', res_list: reservations}); 
+                        }
+
+
                         if((currCapacity-req.body.people_num)<0){
                             console.log('ERROR: Time Collision.  Conflicts with other reservations and restaurant is over capacity.');
 							return res.render('res_list',{title: 'Error: Over Capacity.  Reservations for requested restaurant are listed below:', res_list: reservations});                                              
