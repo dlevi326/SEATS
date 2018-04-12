@@ -1,0 +1,19 @@
+Test Case #1 [Not Resolved]
+
+State: /users/cust/create
+
+Description: Testing the creation of customers using mismatched password and "confirm password"
+
+Input: 
+
+Email: kim10@cooper.edu
+Password:kim10
+Confirm Password: kim99
+First Name: Chris
+Last Name: Kim
+Phone Number: 9179999999
+
+Pressed Submit
+
+Errors:
+-- Returned same page with an bullet underneath not stating anything

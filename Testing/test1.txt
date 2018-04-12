@@ -1,5 +1,0 @@
-Test Case #1
-
-Title: Create Customer - Creating a Customer Account Successfully
-
-Description: 
