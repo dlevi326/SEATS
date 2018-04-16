@@ -59,7 +59,7 @@ exports.customer_create_post =  [
         .isAlphanumeric().withMessage('First name has non-alphanumeric characters.'),
     body('last_name').isLength({ min: 1 }).trim().withMessage('Last name must be specified.')
         .isAlphanumeric().withMessage('Last name has non-alphanumeric characters.'),
-    body('phone_number').isLength({ min: 1 }).trim().withMessage('Phone must be specified.'),
+    body('phone_number').isLength({ min: 1 }).trim().withMessage('Phone must be specified.').isMobilePhone('any').withMessage('Must be a valid phone number'),
         //.isAlphanumeric().withMessage('Phone Number has non-alphanumeric characters.'),
     
     // Sanitize fields.
