@@ -12,14 +12,14 @@ var CustomerSchema = new Schema(
   }
 );
 
-// Virtual for author's full name
+// Virtual for Customer's full name
 CustomerSchema
 .virtual('name')
 .get(function () {
   return this.last_name + ', ' + this.first_name;
 });
 
-// Virtual for author's URL
+// Virtual for Customer's URL
 CustomerSchema
 .virtual('url')
 .get(function () {

@@ -12,7 +12,7 @@ var ReservationSchema = new Schema(
   }
 );
 
-// Virtual for author's full name
+// Virtual for Reservation
 ReservationSchema.virtual('date_created_formatted')
 .get(function(){
 	return moment(this.date_created).format('MMMM Do, YYYY');
@@ -30,7 +30,7 @@ ReservationSchema
 	return moment(this.date).format('MM/DD/YYYY hh:mm:ss a')
 });
 
-// Virtual for author's URL
+// Virtual for Reservation URL
 ReservationSchema
 .virtual('url')
 .get(function () {

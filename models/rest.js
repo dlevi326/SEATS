@@ -16,7 +16,7 @@ var RestSchema = new Schema(
   }
 );
 
-// Virtual for author's full name
+// Virtual for Restaurant's full name
 RestSchema
 .virtual('name')
 .get(function () {
@@ -35,7 +35,7 @@ RestSchema
   return moment(this.close_time).format('hh:mm:ss a')
 });
 
-// Virtual for author's URL
+// Virtual for Restaurant's URL
 RestSchema
 .virtual('url')
 .get(function () {
