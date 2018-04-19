@@ -84,47 +84,47 @@ exports.reservation_create_post = [
             }else{
                 var rest_name = req.session.user.rest_name;
                 var cust = req.body.creator;
-            }/*
-            if(rest_name==""){
-                console.log('helloworld');
-                Rest.find({}, '_id rest_name open_time close_time people_num max_capacity').exec(function(err, rests){
-                    if(err){return next(err);}        
-                    console.log('---');
-                    console.log(rests)
-                    res.render('res_create',{title:'Create Reservations',restaurants:res.restaurants, customers:res.customers, filtered_res:rests});
-                    console.log('test');
-                    return;
-                });
+            }
+    
+            if(rest_name==''){
+                res_filters = [];
 
-                var res_filters = [];
-                return res.render('res_create',{title:'Create Reservations',restaurants:res.restaurants, customers:res.customers, filtered_res:res_filters});
-            }*/
-            console.log(rest_name);
-            console.log(cust);
-            // Mongoose queries
-            Rest.findOne({'rest_name':rest_name},'_id', function(err, restaurant){
-                var error = [];
-                if(err) return next(err)
-                if(restaurant == null){
+                Rest.find().exec(function(err, list_rest){
+                    rest_filters = []
+                    for(var rest of list_rest){
+                        rest_filters.push(rest);
+                    }
                     
-                    async.parallel({
-                        restaurants: function(callback) {
-                            Rest.find(callback);
-                        },
-                        customers: function(callback) {
-                            Cust.find(callback);
-                        },
-                    }, function(err, results) {
-                        if (err) { return next(err); }
-                            
-                            error.push('Invalid restaurant');
-                            findPerson(restaurant,error)
-                    });
-                }else{
-                    checkTimeWithRest(restaurant,error);
-                    
-                }
-            });
+                    return res.render('res_create',{title:'Create Reservations',restaurants:res.restaurants, customers:res.customers, filtered_res:rest_filters});
+                });
+            }
+            else{
+
+                // Mongoose queries
+                Rest.findOne({'rest_name':rest_name},'_id', function(err, restaurant){
+                    var error = [];
+                    if(err) return next(err)
+                    if(restaurant == null){
+                        
+                        async.parallel({
+                            restaurants: function(callback) {
+                                Rest.find(callback);
+                            },
+                            customers: function(callback) {
+                                Cust.find(callback);
+                            },
+                        }, function(err, results) {
+                            if (err) { return next(err); }
+                                
+                                error.push('Invalid restaurant');
+                                findPerson(restaurant,error)
+                        });
+                    }else{
+                        checkTimeWithRest(restaurant,error);
+                        
+                    }
+                });
+            }
 
 
             checkTimeWithRest = function(restaurant,error){

@@ -34,10 +34,11 @@ block content
 
     if filtered_res
       div.form-group
-        Available Restaurants:
+        strong Available Restaurants:
           ul
             for rest in filtered_res
-              li adfsaskdjfk asdflkjasdflkj asdflaskjdflk #{rest.rest_name}
+              li 
+                a(href=rest.url) #{rest.name}
 
     button.btn.btn-primary(type='submit') Submit
 
