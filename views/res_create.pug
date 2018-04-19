@@ -32,13 +32,14 @@ block content
             for customer in customers
               option(value=customer.email) #{customer.first_name+', '+customer.last_name}
 
-    button.btn.btn-primary(type='submit') Submit
+    if filtered_res
+      div.form-group
+        Available Restaurants:
+          ul
+            for rest in filtered_res
+              li adfsaskdjfk asdflkjasdflkj asdflaskjdflk #{rest.rest_name}
 
-  if filtered_res
-    Available Restaurants:
-    ul
-      for res in filtered_res
-        li #{res.name}
+    button.btn.btn-primary(type='submit') Submit
 
   if errors
     ul

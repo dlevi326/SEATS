@@ -84,11 +84,21 @@ exports.reservation_create_post = [
             }else{
                 var rest_name = req.session.user.rest_name;
                 var cust = req.body.creator;
-            }
-            if(req.body.rest_name==null){
-                res_filters = null
+            }/*
+            if(rest_name==""){
+                console.log('helloworld');
+                Rest.find({}, '_id rest_name open_time close_time people_num max_capacity').exec(function(err, rests){
+                    if(err){return next(err);}        
+                    console.log('---');
+                    console.log(rests)
+                    res.render('res_create',{title:'Create Reservations',restaurants:res.restaurants, customers:res.customers, filtered_res:rests});
+                    console.log('test');
+                    return;
+                });
+
+                var res_filters = [];
                 return res.render('res_create',{title:'Create Reservations',restaurants:res.restaurants, customers:res.customers, filtered_res:res_filters});
-            }
+            }*/
             console.log(rest_name);
             console.log(cust);
             // Mongoose queries

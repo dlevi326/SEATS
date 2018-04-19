@@ -1,1 +1,6 @@
-test2_NR.txt
+Rest.find({}, '_id rest_name open_time close_time people_num max_capacity').exec(function(err, restaurants){
+                    if(err){return next(err);}        
+                    console.log('---');
+                    console.log(restaurants)
+                    return res.render('res_create',{title:'Create Reservations',restaurants:res.restaurants, customers:res.customers, filtered_res:restaurants});
+                });
