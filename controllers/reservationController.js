@@ -69,12 +69,24 @@ exports.reservation_create_post = [
     // Process request after validation and sanitization.
     (req, res, next) => {
 
+        console.log(res.restaurants)
+
         // Extract the validation errors from a request.
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             // There are errors. Render form again with sanitized values/errors messages.
-            res.render('res_create', { title: 'Create Reservations', errors: errors.array(), restaurants:res.restaurants,customers:res.customers });
+            async.parallel({
+                restaurants: function(callback) {
+                    Rest.find(callback);
+                },
+                customers: function(callback) {
+                    Cust.find(callback);
+                },
+            }, function(err, results) {
+                if (err) { return next(err); }
             
+                return res.render('res_create', { title: 'Create Reservations', errors: errors.array(), restaurants:results.restaurants,customers:results.customers });
+            });
         }
         else {
             // Data from form is valid.
@@ -177,8 +189,21 @@ exports.reservation_create_post = [
                             }
                         }
 
-                        return res.render('res_create',{title:'Create Reservations',restaurants:res.restaurants, customers:res.customers, filtered_res:rest_filters});
+                        console.log(res.restaurants)
 
+                        async.parallel({
+                            restaurants: function(callback) {
+                                Rest.find(callback);
+                            },
+                            customers: function(callback) {
+                                Cust.find(callback);
+                            },
+                        }, function(err, results) {
+                            if (err) { return next(err); }
+            
+
+                            return res.render('res_create',{title:'Create Reservations',restaurants:results.restaurants, customers:results.customers, filtered_res:rest_filters});
+                        });
                         // --------------------------------------------------
                         
                         
