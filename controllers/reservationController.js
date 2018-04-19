@@ -85,6 +85,10 @@ exports.reservation_create_post = [
                 var rest_name = req.session.user.rest_name;
                 var cust = req.body.creator;
             }
+            if(req.body.rest_name==null){
+                res_filters = null
+                return res.render('res_create',{title:'Create Reservations',restaurants:res.restaurants, customers:res.customers, filtered_res:res_filters});
+            }
             console.log(rest_name);
             console.log(cust);
             // Mongoose queries
@@ -114,6 +118,7 @@ exports.reservation_create_post = [
 
 
             checkTimeWithRest = function(restaurant,error){
+
 
                 Rest.find({'rest_name':rest_name},'_id open_time close_time people_num max_capacity').exec(function(err, restaurants){
                     if(err){return next(err);}
