@@ -5,14 +5,25 @@ block content
 
   form(method='POST' action='')
     div.form-group
-      label(for='date') Date:
-      input#date.form-control(type='date', name='date' required='true')
 
-      label(for='time') Time:
-      input#time.form-control(type='time', name='time' required='true')
+      if prevOptions
+        label(for='date') Date:
+        input#date.form-control(type='date', name='date' required='true',value=prevOptions.date)
 
-      label(for='people_num') People Number:
-      input#people_num.form-control(type='text', placeholder='4' name='people_num' required='true') 
+        label(for='time') Time:
+        input#time.form-control(type='time', name='time' required='true',value=prevOptions.time)
+
+        label(for='people_num') People Number:
+        input#people_num.form-control(type='text', placeholder='4' name='people_num' required='true',value = prevOptions.people_num) 
+      else
+        label(for='date') Date:
+        input#date.form-control(type='date', name='date' required='true')
+
+        label(for='time') Time:
+        input#time.form-control(type='time', name='time' required='true')
+
+        label(for='people_num') People Number:
+        input#people_num.form-control(type='text', placeholder='4' name='people_num' required='true') 
 
     if session.user.first_name
       div.form-group

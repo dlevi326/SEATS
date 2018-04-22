@@ -200,9 +200,14 @@ exports.reservation_create_post = [
                             },
                         }, function(err, results) {
                             if (err) { return next(err); }
-            
+                            
+                            prevOptions = {
+                                date: req.body.date,
+                                time: req.body.time,
+                                people_num: req.body.people_num
+                            }
 
-                            return res.render('res_create',{title:'Create Reservations',restaurants:results.restaurants, customers:results.customers, filtered_res:rest_filters});
+                            return res.render('res_create',{title:'Create Reservations',restaurants:results.restaurants, customers:results.customers, filtered_res:rest_filters,prevOptions: prevOptions});
                         });
                         // --------------------------------------------------
                         
