@@ -1,0 +1,13 @@
+Test Case #3 [Not Resolved]
+
+Description: Able to create a reservation for a restaurant even if the time is wrong. Error occurs when
+a restaurant's opening time and closing time are one minute apart.
+
+Input: 
+
+Create a Tester restaurant with opening time 11:28pm and closing time of 11:29pm.
+
+Created a reservation at this restaurant at 2pm and was successful.
+
+Errors:
+-- Does not trigger a time collision even though the time should not be allowed.
