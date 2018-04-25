@@ -1,1 +1,11 @@
+Test Case #5 [Not Resolved]
 
+Description: For incorrect id and password in login screen, error message not displayed correctly.
+
+Input: 
+
+Type in not matching password from /users/login
+
+
+Errors:
+-- Bullet saying [Object Object]
