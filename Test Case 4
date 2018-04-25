@@ -1,0 +1,12 @@
+Test Case #4 [Not Resolved]
+
+Description: Can access /users/login when logged in through url. Non critical error since when you log in, it automatically logs out the original user.
+
+Input: 
+
+Attempt login through url when logged in.
+
+Log in was successful
+
+Errors:
+-- No error message at all
