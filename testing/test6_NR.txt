@@ -1,0 +1,11 @@
+Test Case #6 [Not Resolved]
+
+Description: For Changing Password, any matching password is accepted in the password, confirmed password. 
+
+Input: 
+
+Type in random password and matching password, and a new password in the new password box.
+
+
+Errors:
+-- The password change goes through. 
