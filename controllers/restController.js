@@ -186,11 +186,12 @@ exports.rest_update_post = function(req, res){
         if(err) {
             console.log(err);
             return next(err);
-        }/*else if(req.body.password != req.body.password2){
+        }
+        else if(req.body.password != req.body.password2){
 
             res.render('cust_form', { title: 'Create Customer', name: req.body, errors: ['password does not match'] });
             return;
-        }*/
+        }
         else{
             console.log(customer);
             res.redirect(customer.url);

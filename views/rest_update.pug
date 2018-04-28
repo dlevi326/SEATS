@@ -5,6 +5,10 @@ block content
 
   form(method='POST' action='')
     div.form-group
+      label(for='password') Password:
+      input#password.form-control(type='password' name='password'  required='true' value=(undefined===rest ? '' : rest.password))
+      label(for='password2') Confirm Password:
+      input#password2.form-control(type='password' name='password2')
       label(for='rest_name') Restaurant Name:
       input#rest_name.form-control(type='text', placeholder='Chipotle' name='rest_name' required='true' value=(undefined===rest ? '' : Rest.rest_name) )
       label(for='Address') Address:
