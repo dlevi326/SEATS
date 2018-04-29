@@ -97,8 +97,22 @@ exports.reservation_create_post = [
                 var rest_name = req.session.user.rest_name;
                 var cust = req.body.creator;
             }
-    
-            if(rest_name==''){
+
+            if(req.body.people_num<=0){
+
+                async.parallel({
+                restaurants: function(callback) {
+                    Rest.find(callback);
+                },
+                customers: function(callback) {
+                    Cust.find(callback);
+                },
+                }, function(err, results) {
+                if (err) { return next(err); }
+                    return res.render('res_create', { title: 'Create Reservations -- People Reservation should be for at least one person', restaurants:results.restaurants,customers:results.customers });
+                });
+            }
+            else if(rest_name==''){
                 res_filters = [];
 
                 Rest.find().exec(function(err, list_rest){
