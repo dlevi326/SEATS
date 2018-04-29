@@ -33,7 +33,12 @@ exports.login_post =  [
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             // There are errors. Render form again with sanitized values/errors messages.
-            res.render('login', { title: 'SEATS', name: req.body, errors: errors.array() });
+            errs = []
+            console.log(errors.array())
+            for (var err of errors.array()){
+                errs.push(err.msg)
+            }
+            res.render('login', { title: 'SEATS', name: req.body, errors: errs });
             return;
         }
         else {
