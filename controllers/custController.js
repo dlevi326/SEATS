@@ -173,6 +173,7 @@ exports.customer_update_get = function(req,res){
 exports.customer_update_post = function(req,res){
     // need to check password
     // implement express validator
+
     Cust.findOneAndUpdate({'email': req.session.user.email}, {$set:{first_name: req.body.first_name, last_name:req.body.last_name, phone_number: req.body.phone_number}}, {}, function(err, customer){
         if(err) {
             console.log(err);
@@ -181,6 +182,10 @@ exports.customer_update_post = function(req,res){
         else if(req.body.password != req.body.password2){
 
             res.render('cust_form', { title: 'Create Customer', name: req.body, errors: ['password does not match'] });
+            return;
+        }
+        else if(req.body.password.length<5){
+            res.render('cust_form', { title: 'Create Customer', name: req.body, errors: ['password must be greater than five characters'] });
             return;
         }
         else{

@@ -89,34 +89,46 @@ exports.change_password_get = function(req,res){
 exports.change_password_post = function(req,res, next){
     if(req.session.user.first_name){
         //should check for proper passwords
-        bcrypt.hash(req.body.new_password, saltRounds, function(err,hash){
-            if (err) return next(err);
-            Cust.findOneAndUpdate({'email': req.session.user.email}, {$set:{password: hash}}, {}, function(err, customer){
-                if(err) {
-                    console.log(err);
-                    return next(err);
-                }
-                else{
-                    console.log(customer);
-                    res.redirect(customer.url);
-                }
+
+        if(req.body.new_password.length<5){
+            return res.render('change_password',{title: "Change Password -- Password must be greater than 5 characters"})
+        }
+        else{
+            bcrypt.hash(req.body.new_password, saltRounds, function(err,hash){
+                if (err) return next(err);
+                Cust.findOneAndUpdate({'email': req.session.user.email}, {$set:{password: hash}}, {}, function(err, customer){
+                    if(err) {
+                        console.log(err);
+                        return next(err);
+                    }
+                    else{
+                        console.log(customer);
+                        res.redirect(customer.url);
+                    }
+                });
             });
-        });
+        }
     }
     if(req.session.user.rest_name){
-        bcrypt.hash(req.body.new_password, saltRounds, function(err,hash){
-            if (err) return next(err);
-            Rest.findOneAndUpdate({'email': req.session.user.email}, {$set:{password: hash}}, {}, function(err, customer){
-                if(err) {
-                    console.log(err);
-                    return next(err);
-                }
-                else{
-                    console.log(customer);
-                    res.redirect(customer.url);
-                }
+
+        if(req.body.new_password.length<5){
+            return res.render('change_password',{title: "Change Password -- Password must be greater than 5 characters"})
+        }
+        else{
+            bcrypt.hash(req.body.new_password, saltRounds, function(err,hash){
+                if (err) return next(err);
+                Rest.findOneAndUpdate({'email': req.session.user.email}, {$set:{password: hash}}, {}, function(err, customer){
+                    if(err) {
+                        console.log(err);
+                        return next(err);
+                    }
+                    else{
+                        console.log(customer);
+                        res.redirect(customer.url);
+                    }
+                });
             });
-        });
+        }
     }
 }
 
