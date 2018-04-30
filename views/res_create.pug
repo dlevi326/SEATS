@@ -27,8 +27,11 @@ block content
 
     if session.user.first_name
       div.form-group
-        label(for='restaurant') Restaurant: (Do not select a restaurant if you desire all available restaurants in a specified time/capacity)
+        label(for='restaurant') Restaurant: 
         input(type='text' list='restaurant' name='restaurant' placeholder='Select restaurant')
+        br
+        strong NOTE: 
+        | Do not select a restaurant if you desire all available restaurants in a specified time/capacity
         datalist(id='restaurant')
           if restaurants
             for restaurant in restaurants
