@@ -90,45 +90,56 @@ exports.change_password_post = function(req,res, next){
     if(req.session.user.first_name){
         //should check for proper passwords
 
-        if(req.body.new_password.length<5){
-            return res.render('change_password',{title: "Change Password -- Password must be greater than 5 characters"})
-        }
-        else{
-            bcrypt.hash(req.body.new_password, saltRounds, function(err,hash){
-                if (err) return next(err);
-                Cust.findOneAndUpdate({'email': req.session.user.email}, {$set:{password: hash}}, {}, function(err, customer){
-                    if(err) {
-                        console.log(err);
-                        return next(err);
-                    }
-                    else{
-                        console.log(customer);
-                        res.redirect(customer.url);
-                    }
+        
+        bcrypt.compare(req.body.password, req.session.user.password, function(err, result){
+            if(err) return (err);
+            if(req.body.new_password.length<5){
+                return res.render('change_password',{title: "Change Password -- Password must be greater than 5 characters"})
+            }
+            if(result === true && req.body.password === req.body.password2){
+                bcrypt.hash(req.body.new_password, saltRounds, function(err,hash){
+                    if (err) return next(err);
+                    Cust.findOneAndUpdate({'email': req.session.user.email}, {$set:{password: hash}}, {}, function(err, customer){
+                        if(err) {
+                            console.log(err);
+                            return next(err);
+                        }
+                        else{
+                            console.log(customer);
+                            return res.redirect(customer.url);
+                        }
+                    });
                 });
-            });
-        }
+            }else{
+                return res.redirect('/users/change_password')
+            }
+        });
     }
     if(req.session.user.rest_name){
-
-        if(req.body.new_password.length<5){
-            return res.render('change_password',{title: "Change Password -- Password must be greater than 5 characters"})
-        }
-        else{
-            bcrypt.hash(req.body.new_password, saltRounds, function(err,hash){
-                if (err) return next(err);
-                Rest.findOneAndUpdate({'email': req.session.user.email}, {$set:{password: hash}}, {}, function(err, customer){
-                    if(err) {
-                        console.log(err);
-                        return next(err);
-                    }
-                    else{
-                        console.log(customer);
-                        res.redirect(customer.url);
-                    }
+        
+        bcrypt.compare(req.body.password, req.session.user.password, function(err, result){
+            if(err) return (err);
+            if(req.body.new_password.length<5){
+                return res.render('change_password',{title: "Change Password -- Password must be greater than 5 characters"})
+            }
+            if(result === true && req.body.password === req.body.password2){
+                bcrypt.hash(req.body.new_password, saltRounds, function(err,hash){
+                    if (err) return next(err);
+                    Rest.findOneAndUpdate({'email': req.session.user.email}, {$set:{password: hash}}, {}, function(err, rest){
+                        if(err) {
+                            console.log(err);
+                            return next(err);
+                        }
+                        else{
+                            console.log(rest);
+                            return res.redirect(rest.url);
+                        }
+                    });
                 });
-            });
-        }
+            }else{
+                return res.redirect('/users/change_password')
+            }
+        });
     }
 }
 

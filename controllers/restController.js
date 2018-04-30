@@ -176,25 +176,28 @@ exports.rest_update_get = function(req, res, next){
     res.render('rest_update', { title: 'Update Restaurant'} );
 }
 
-exports.rest_update_post = function(req, res){
+exports.rest_update_post = function(req, res, next){
     //implement password check
     //implement express validator
     var defaultdate = "1970-01-01";
     var otime = new Date(defaultdate + " " + req.body.open_time);
     var ctime = new Date(defaultdate + " " + req.body.close_time);
-    Rest.findOneAndUpdate({'email': req.session.user.email}, {$set:{rest_name: req.body.rest_name, Address:req.body.Address, phone_number: req.body.phone_number, max_capacity: req.body.max_capacity, open_time: otime, close_time: ctime}}, {}, function(err, customer){
-        if(err) {
-            console.log(err);
-            return next(err);
-        }
-        else if(req.body.password != req.body.password2){
 
-            res.render('cust_form', { title: 'Create Customer', name: req.body, errors: ['password does not match'] });
-            return;
+    bcrypt.compare(req.body.password, req.session.user.password, function(err, result){
+        if(err) return (err);
+        if(result === true && req.body.password === req.body.password2){
+            if (err) return err;
+            Rest.findOneAndUpdate({'email': req.session.user.email}, {$set:{rest_name: req.body.rest_name, Address:req.body.Address, phone_number: req.body.phone_number, max_capacity: req.body.max_capacity, open_time: otime, close_time: ctime}}, {}, function(err, rest){
+                if(err) {
+                    console.log(err);
+                    return next(err);
+                }
+                res.redirect(rest.url);
+                return;
+            });
         }
         else{
-            console.log(customer);
-            res.redirect(customer.url);
-        }
+            res.redirect('/users/rest/update')
+        }  
     });
 }
