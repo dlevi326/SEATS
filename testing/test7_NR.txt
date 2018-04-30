@@ -1,0 +1,11 @@
+Test Case #7 [Not Resolved]
+
+Description: For Updating Account, any matching password is accepted in the password, confirmed password. 
+
+Input: 
+
+Type in random password and matching password, and new info in the other slots.
+
+
+Errors:
+-- The new information goes through.
