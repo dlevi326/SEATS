@@ -80,10 +80,10 @@ exports.customer_create_post =  [
             return;
         }else if(req.body.password != req.body.password2){
 
-            var error_list = errors.array();
-            error_list.push('password does not match');
-            res.render('cust_form', { title: 'Create Customer', name: req.body, errors: error_list });
-            return;
+            //var error_list = errors.array();
+            var error_list = [];
+            error_list.push({msg:'password does not match'});
+            return res.render('cust_form', { title: 'Create Customer', name: req.body, errors: error_list });
         }
         else {
             Rest.findOne({'email':req.body.email},'_id email', function (err, restaurant) {
