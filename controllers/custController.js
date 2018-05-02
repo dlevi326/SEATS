@@ -86,34 +86,44 @@ exports.customer_create_post =  [
             return res.render('cust_form', { title: 'Create Customer', name: req.body, errors: error_list });
         }
         else {
-            Rest.findOne({'email':req.body.email},'_id email', function (err, restaurant) {
-                var error = [];
-                if(err) return next(err)
-                if(restaurant == null){
-                    // Data from form is valid.
-                    // Create an Customer object with escaped and trimmed data.
-                    bcrypt.hash(req.body.password, saltRounds, function(err, hash){
-                        var cust = new Cust(
-                            {
-                                email: req.body.email,
-                                password: hash,
-                                first_name: req.body.first_name,
-                                last_name: req.body.last_name,
-                                phone_number: req.body.phone_number
-                            });
-                        cust.save(function (err) {
-                            if (err) { return next(err); }
-                            // Successful - redirect to new Customer record.
-                            else res.redirect('/users/login')
-                            return
-                        });
-                    });
-                }else{
-
+            Cust.findOne({'email':req.body.email},'_id email', function(err, customer){
+                if(customer!=null){
+                    console.log(customer)
+                    error_list = [{msg:'Email already exists'}]
                     res.render('cust_form', { title: 'Create Customer', name: req.body, errors: error_list });
                     return;
                 }
-            })
+                else{
+                    Rest.findOne({'email':req.body.email},'_id email', function (err, restaurant) {
+                        var error = [];
+                        if(err) return next(err)
+                        if(restaurant == null){
+                            // Data from form is valid.
+                            // Create an Customer object with escaped and trimmed data.
+                            bcrypt.hash(req.body.password, saltRounds, function(err, hash){
+                                var cust = new Cust(
+                                    {
+                                        email: req.body.email,
+                                        password: hash,
+                                        first_name: req.body.first_name,
+                                        last_name: req.body.last_name,
+                                        phone_number: req.body.phone_number
+                                    });
+                                cust.save(function (err) {
+                                    if (err) { return next(err); }
+                                    // Successful - redirect to new Customer record.
+                                    else res.redirect('/users/login')
+                                    return
+                                });
+                            });
+                        }else{
+
+                            res.render('cust_form', { title: 'Create Customer', name: req.body, errors: error_list });
+                            return;
+                        }
+                    })
+                }
+            });
         }
     }
 ];

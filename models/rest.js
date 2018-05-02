@@ -7,7 +7,7 @@ var RestSchema = new Schema(
 {
     email: {type: String, unique: true, required: true, trim: true},
     password: {type: String, required: true, max: 20},
-    rest_name: {type: String, required: true, trim: true, unique: true},
+    rest_name: {type: String, required: true, trim: true},
     max_capacity: {type: Number, required: true},
     phone_number: {type: String, required: true, max: 12},
     Address: {type: String, required: true, max: 12},

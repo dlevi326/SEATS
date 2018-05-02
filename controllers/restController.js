@@ -84,6 +84,23 @@ exports.rest_create_post = [
         //console.log(moment(req.open_time))
         //console.log(moment(req.open_time).add(2, 'h').toDate());
 
+
+        //var open = moment(req.body.open_time).getHours()+':'+req.body.open_time.getMinutes()
+        //var close = req.body.close_time.getHours()+':'+req.body.close_time.getMinutes()
+        var open = req.body.open_time
+        var close = req.body.close_time
+        //console.log(open)
+        //console.log(close)
+
+        open = moment(open,'hh:mm')
+        close = moment(close,'hh:mm')
+
+        //console.log(open)
+        if(close<open){
+            close.add(1,'d')
+        }
+        //console.log(close)
+
         if (!errors.isEmpty()) {
             // There are errors. Render form again with sanitized values/errors messages.
 
@@ -93,12 +110,14 @@ exports.rest_create_post = [
             res.render('rest_create', { title: 'Create Restaurant', name: req.body, errors: ['Passwords do not match'] });
             return;
         } 
-        else if(moment(req.open_time).add(3, 'h').toDate()>moment(req.close_time)){
+        else if(open.add(3,'h').toDate()>close.toDate()){
+            // Checks if restaurant has valid open/close (at least 3 hr time space)
+
             res.render('rest_create', { title: 'Create Restaurant', name: req.body, errors: ['Restaurant must be open for more than 3 hours'] });
             return;
         }
         else {
-            Cust.findOne({'email':req.body.email},'_id email', function (err, customer) {
+            Rest.findOne({'email':req.body.email},'_id email', function (err, customer) {
                 var error = [];
                 if(err) return next(err)
                 if(customer == null){
@@ -126,8 +145,7 @@ exports.rest_create_post = [
                         });
                     });
                 }else{
-
-                    res.render('rest_create', {title:'Create Restaurant', name: req.body, errors: ['Error with data']});
+                    res.render('rest_create', {title:'Create Restaurant', name: req.body, errors: ['Error: Email already exists']});
                     return;
                 }
             })
