@@ -59,7 +59,7 @@ exports.rest_create_post = [
     //body('password2').equals(body('password')).withMessage('password does not match'),
     body('rest_name').isLength({ min: 1 }).trim().withMessage('Restaurant name must be specified.'),
     body('Address').isLength({ min: 1 }).trim().withMessage('Address must be specified.'),
-    body('max_capacity').isLength({ min: 1 }).trim().withMessage('Max capacity must be specified.'),
+    body('max_capacity').isLength({ min: 1 }).trim().isInt().withMessage('Max capacity must be specified.'),
     body('phone_number').isLength({ min: 1 }).trim().withMessage('Phone number must be specified.'),
     body('open_time').isLength({ min: 1 }).trim().withMessage('Open time must be specified.'),
     body('close_time').isLength({ min: 1 }).trim().withMessage('Close time must be specified.'),
@@ -103,8 +103,12 @@ exports.rest_create_post = [
 
         if (!errors.isEmpty()) {
             // There are errors. Render form again with sanitized values/errors messages.
+            errorlist = []
+            for(var err of errors.array()){
+                errorlist.push(err.msg);
+            }
 
-            res.render('rest_create', { title: 'Create Restaurant', errors: ['Error with data'] });
+            res.render('rest_create', { title: 'Create Restaurant', errors: errorlist });
             return;
         }else if(req.body.password != req.body.password2){
             res.render('rest_create', { title: 'Create Restaurant', name: req.body, errors: ['Passwords do not match'] });

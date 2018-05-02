@@ -55,7 +55,7 @@ exports.reservation_create_post = [
     //body('restaurant').isLength({ min: 1 }).trim().withMessage('Restaurant should be specified.'),
     body('date').isLength({ min: 1}).trim().withMessage('Date must be specified.'),
     body('time').isLength({ min: 1 }).trim().withMessage('Time must be specified.'),
-    body('people_num').isLength({ min: 1 }).trim().withMessage('People number must be specified.'),
+    body('people_num').isLength({ min: 1 }).isInt().trim().withMessage('People number must be specified.'),
     //body('creator').isLength({ min: 1 }).trim().withMessage('Creator must be specified.'),
     
     // Sanitize fields.
