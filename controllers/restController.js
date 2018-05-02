@@ -5,6 +5,7 @@ var Cust = require('../models/cust');
 var Res = require('../models/reservations');
 var async = require('async');
 var bcrypt = require('bcrypt');
+var moment = require('moment');
 
 const saltRounds = 10;
 
@@ -79,15 +80,24 @@ exports.rest_create_post = [
 
         // Extract the validation errors from a request.
         const errors = validationResult(req);
+
+        //console.log(moment(req.open_time))
+        //console.log(moment(req.open_time).add(2, 'h').toDate());
+
         if (!errors.isEmpty()) {
             // There are errors. Render form again with sanitized values/errors messages.
-            res.render('rest_create', { title: 'Create Customer', errors: errors.array() });
+
+            res.render('rest_create', { title: 'Create Restaurant', errors: ['Error with data'] });
             return;
         }else if(req.body.password != req.body.password2){
-
-            res.render('cust_form', { title: 'Create Customer', name: req.body, errors: ['password does not match'] });
+            res.render('rest_create', { title: 'Create Restaurant', name: req.body, errors: ['Passwords do not match'] });
             return;
-        } else {
+        } 
+        else if(moment(req.open_time).add(3, 'h').toDate()>moment(req.close_time)){
+            res.render('rest_create', { title: 'Create Restaurant', name: req.body, errors: ['Restaurant must be open for more than 3 hours'] });
+            return;
+        }
+        else {
             Cust.findOne({'email':req.body.email},'_id email', function (err, customer) {
                 var error = [];
                 if(err) return next(err)
@@ -117,7 +127,7 @@ exports.rest_create_post = [
                     });
                 }else{
 
-                    res.render('rest_create', {title:'Create Restaurant', name: req.body, errors: errors.array()});
+                    res.render('rest_create', {title:'Create Restaurant', name: req.body, errors: ['Error with data']});
                     return;
                 }
             })
