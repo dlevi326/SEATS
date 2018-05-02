@@ -205,27 +205,38 @@ exports.rest_update_get = function(req, res, next){
 }
 
 exports.rest_update_post = function(req, res, next){
-    //implement password check
-    //implement express validator
-    var defaultdate = "1970-01-01";
-    var otime = new Date(defaultdate + " " + req.body.open_time);
-    var ctime = new Date(defaultdate + " " + req.body.close_time);
 
-    bcrypt.compare(req.body.password, req.session.user.password, function(err, result){
-        if(err) return (err);
-        if(result === true && req.body.password === req.body.password2){
-            if (err) return err;
-            Rest.findOneAndUpdate({'email': req.session.user.email}, {$set:{rest_name: req.body.rest_name, Address:req.body.Address, phone_number: req.body.phone_number, max_capacity: req.body.max_capacity, open_time: otime, close_time: ctime}}, {}, function(err, rest){
-                if(err) {
-                    console.log(err);
-                    return next(err);
-                }
-                res.redirect(rest.url);
-                return;
-            });
+    Rest.findOne({$or:[{'rest_name':req.body.rest_name}]},'_id email', function (err, rest) {
+        if(rest!=null){
+            err_list = [{msg:'Error: Restaurant name already exists'}]
+            return res.render('rest_update',{errors:err_list});
         }
         else{
-            res.redirect('/users/rest/update')
-        }  
+
+            //implement password check
+            //implement express validator
+            var defaultdate = "1970-01-01";
+            var otime = new Date(defaultdate + " " + req.body.open_time);
+            var ctime = new Date(defaultdate + " " + req.body.close_time);
+
+            bcrypt.compare(req.body.password, req.session.user.password, function(err, result){
+                if(err) return (err);
+
+                if(result === true && req.body.password === req.body.password2){
+                    if (err) return err;
+                    Rest.findOneAndUpdate({'email': req.session.user.email}, {$set:{rest_name: req.body.rest_name, Address:req.body.Address, phone_number: req.body.phone_number, max_capacity: req.body.max_capacity, open_time: otime, close_time: ctime}}, {}, function(err, rest){
+                        if(err) {
+                            console.log(err);
+                            return next(err);
+                        }
+                        res.redirect(rest.url);
+                        return;
+                    });
+                }
+                else{
+                    res.redirect('/users/rest/update')
+                }  
+            });
+        }
     });
 }
