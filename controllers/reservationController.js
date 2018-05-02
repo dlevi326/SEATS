@@ -362,13 +362,34 @@ exports.reservation_create_post = [
             }
             
             saveSchema = function(restaurant,person){
-                var reservation = new Res({
-                    creator: person._id,
-                    date: new Date(req.body.date + " " + req.body.time),
-                    people_num: req.body.people_num,
-                    rest: restaurant._id,
-                });
-                saveRes(reservation)
+                if(restaurant==null){
+                    console.log('THIS IS NULL')
+
+                    async.parallel({
+                            restaurants: function(callback) {
+                                Rest.find(callback);
+                            },
+                            customers: function(callback) {
+                                Cust.find(callback);
+                            },
+                        }, function(err, results) {
+                            if (err) { return next(err); }
+                                error = []
+                                error.push({msg:'Invalid Restaurant'})
+                                return res.render('res_create', { title: 'Create Reservation',restaurants:results.restaurants, errors: error, customers: results.customers });
+                    });
+
+                }
+                else{
+                    var reservation = new Res({
+                        creator: person._id,
+                        date: new Date(req.body.date + " " + req.body.time),
+                        people_num: req.body.people_num,
+                        rest: restaurant._id,
+                    });
+                    saveRes(reservation);
+                }
+               
             }
         
             saveRes = function(reservation){
