@@ -117,10 +117,10 @@ exports.rest_create_post = [
             return;
         }
         else {
-            Rest.findOne({'email':req.body.email},'_id email', function (err, customer) {
+            Rest.findOne({$or:[{'email':req.body.email},{'rest_name':req.body.rest_name}]},'_id email', function (err, rest) {
                 var error = [];
                 if(err) return next(err)
-                if(customer == null){
+                if(rest == null){
                     // Data from form is valid.
                     var defaultdate = "1970-01-01"
                     // Create an Restaurants object with escaped and trimmed data.
@@ -145,7 +145,7 @@ exports.rest_create_post = [
                         });
                     });
                 }else{
-                    res.render('rest_create', {title:'Create Restaurant', name: req.body, errors: ['Error: Email already exists']});
+                    res.render('rest_create', {title:'Create Restaurant', name: req.body, errors: ['Error: Restaurant already exists']});
                     return;
                 }
             })
